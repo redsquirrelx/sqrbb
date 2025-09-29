@@ -8,10 +8,6 @@ terraform {
 }
 
 provider "aws" {
-    region = "us-east-2"
-}
-
-provider "aws" {
     alias = "ue2"
     region = "us-east-2"
 }
