@@ -39,3 +39,21 @@ resource "aws_subnet" "app-subnet" {
         Name = "app-subnet"
     }
 }
+
+resource "aws_route_table" "app-subnet-rt" {
+    vpc_id = aws_vpc.this.id
+
+    route {
+        cidr_block = "10.0.0.0/16"
+        gateway_id = "local"
+    }
+
+    tags = {
+      Name = "app-subnet-rt"
+    }
+}
+
+resource "aws_route_table_association" "app-subnet-rta" {
+  subnet_id      = aws_subnet.app-subnet.id
+  route_table_id = aws_route_table.app-subnet-rt.id
+}
