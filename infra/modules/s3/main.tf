@@ -17,6 +17,7 @@ resource "aws_s3_bucket" "us-east-2" {
 }
 
 resource "aws_s3_bucket_versioning" "us-east-2" {
+    provider = aws.ue2
     bucket = aws_s3_bucket.us-east-2.id
     versioning_configuration {
         status = "Enabled"
@@ -33,6 +34,7 @@ resource "aws_s3_bucket" "sa-east-1" {
 }
 
 resource "aws_s3_bucket_versioning" "sa-east-1" {
+    provider = aws.se1
     bucket = aws_s3_bucket.sa-east-1.id
     versioning_configuration {
         status = "Enabled"
