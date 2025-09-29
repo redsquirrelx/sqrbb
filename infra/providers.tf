@@ -12,11 +12,11 @@ provider "aws" {
 }
 
 provider "aws" {
-    alias = "us-east-2"
+    alias = "ue2"
     region = "us-east-2"
 }
 
 provider "aws" {
-    alias = "sa-east-1"
+    alias = "se1"
     region = "sa-east-1"
 }
