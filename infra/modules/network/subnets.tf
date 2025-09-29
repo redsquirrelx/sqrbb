@@ -1,10 +1,16 @@
 ## ALB_SUBNET
+data "aws_availability_zones" "available" {
+    state = "available"
+}
+
 resource "aws_subnet" "alb-subnet" {
+    count = length(data.aws_availability_zones.available.names)
     vpc_id = aws_vpc.this.id
-    cidr_block = "10.0.1.0/24"
+    cidr_block = cidrsubnet("10.0.0.0/16", 8, count.index)
     map_public_ip_on_launch = true
+    availability_zone = data.aws_availability_zones.available.names[count.index]
     tags = {
-        Name = "alb-subnet"
+        Name = "alb-subnet-${data.aws_availability_zones.available.names[count.index]}"
     }
 }
 
@@ -27,33 +33,37 @@ resource "aws_route_table" "alb-subnet-rt" {
 }
 
 resource "aws_route_table_association" "alb-subnet-rta" {
-  subnet_id      = aws_subnet.alb-subnet.id
-  route_table_id = aws_route_table.alb-subnet-rt.id
+    count = length(aws_subnet.alb-subnet)
+    subnet_id      = aws_subnet.alb-subnet[count.index].id
+    route_table_id = aws_route_table.alb-subnet-rt.id
 }
 
 ## APP_SUBNET
 resource "aws_subnet" "app-subnet" {
-    vpc_id = aws_vpc.this.id
-    cidr_block = "10.0.192.0/20"
-    tags = {
-        Name = "app-subnet"
-    }
+   count = length(data.aws_availability_zones.available.names)
+   vpc_id = aws_vpc.this.id
+   cidr_block = cidrsubnet("10.0.128.0/17", 3, count.index)
+   availability_zone = data.aws_availability_zones.available.names[count.index]
+   tags = {
+       Name = "app-subnet-${data.aws_availability_zones.available.names[count.index]}"
+   }
 }
 
 resource "aws_route_table" "app-subnet-rt" {
-    vpc_id = aws_vpc.this.id
+   vpc_id = aws_vpc.this.id
 
-    route {
-        cidr_block = "10.0.0.0/16"
-        gateway_id = "local"
-    }
+   route {
+       cidr_block = "10.0.0.0/16"
+       gateway_id = "local"
+   }
 
-    tags = {
-      Name = "app-subnet-rt"
-    }
+   tags = {
+     Name = "app-subnet-rt"
+   }
 }
 
 resource "aws_route_table_association" "app-subnet-rta" {
-  subnet_id      = aws_subnet.app-subnet.id
-  route_table_id = aws_route_table.app-subnet-rt.id
+    count           = length(aws_subnet.alb-subnet)
+    subnet_id       = aws_subnet.app-subnet[count.index].id
+    route_table_id  = aws_route_table.app-subnet-rt.id
 }
