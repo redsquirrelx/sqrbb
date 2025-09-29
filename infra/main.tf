@@ -11,3 +11,11 @@ module "vpc-sa-east-1" {
         aws = aws.se1
     }
 }
+
+module "s3" {
+    source = "./modules/s3"
+    providers = {
+        aws.ue2 = aws.ue2
+        aws.se1 = aws.se1
+    }
+}
