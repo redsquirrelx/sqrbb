@@ -10,6 +10,9 @@ resource "aws_vpc" "this" {
     cidr_block       = "10.0.0.0/16"
     instance_tenancy = "default"
 
+    enable_dns_support   = true
+    enable_dns_hostnames = true
+
     tags = {
         Name = "main-vpc"
     }
@@ -64,4 +67,49 @@ resource "aws_vpc_security_group_egress_rule" "services-sg-egress" {
     security_group_id = aws_security_group.services-sg.id
     cidr_ipv4 = "0.0.0.0/0"
     ip_protocol = "-1"
+}
+
+resource "aws_security_group" "endpoints" {
+    vpc_id = aws_vpc.this.id
+    name = "endpoints-sg"
+    tags = {
+        Name = "endpoints-sg"
+    }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "endpoints" {
+   security_group_id = aws_security_group.endpoints.id
+    referenced_security_group_id = aws_security_group.services-sg.id
+    ip_protocol                  = "-1"
+}
+
+resource "aws_vpc_security_group_egress_rule" "endpoints" {
+    security_group_id = aws_security_group.endpoints.id
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+}
+
+data "aws_region" "current" {}
+
+resource "aws_vpc_endpoint" "ecr_api" {
+  vpc_id            = aws_vpc.this.id
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ecr.api"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
+  security_group_ids = [ aws_security_group.endpoints.id ]
+}
+
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id            = aws_vpc.this.id
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ecr.dkr"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
+  security_group_ids = [ aws_security_group.endpoints.id ]
+}
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.this.id
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = [ aws_route_table.app-subnet-rt.id ]
 }
