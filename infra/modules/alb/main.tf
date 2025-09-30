@@ -12,6 +12,16 @@ resource "aws_lb_target_group" "propiedades" {
     port        = 80
     protocol    = "HTTP"
     target_type = "ip"
+
+    health_check {
+        enabled = true
+        healthy_threshold = 3
+        unhealthy_threshold = 3
+        path = "/propiedades"
+        port = 80
+        timeout = 5
+        matcher = "200"
+    }
 }
 
 resource "aws_lb_target_group" "reservas" {
@@ -20,6 +30,16 @@ resource "aws_lb_target_group" "reservas" {
     port        = 80
     protocol    = "HTTP"
     target_type = "ip"
+    
+    health_check {
+        enabled = true
+        healthy_threshold = 3
+        unhealthy_threshold = 3
+        path = "/propiedades"
+        port = 80
+        timeout = 5
+        matcher = "200"
+    }
 }
 
 resource "aws_lb" "this" {
