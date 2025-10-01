@@ -40,12 +40,12 @@ cd sqrbb
 
 4. Levantar arquitectura:
 ```
-sudo terraform -chdir=infra/ init
-sudo terraform -chdir=infra/ apply
+terraform -chdir=infra/ init
+terraform -chdir=infra/ apply
 ```
 Solicitará un código de cuenta de AWS.
 
 5. Desplegar front end
 ```
-sudo ansible-playbook -i config/inventory.ini config/desplegar-frontend.yaml
+ansible-playbook -i config/inventory.ini config/desplegar-frontend.yaml
 ```
