@@ -1,0 +1,17 @@
+- name: Desplegar frontend
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+    cloudfront_dist_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cloudfront-dist-id') }}"
+
+  tasks:
+    - name: aws sync
+      command: aws s3 sync {{project_root}}/frontend s3://redsqx-static-web-front --delete
+  
+    - name: invalidar cloudfront
+      command: >
+        aws cloudfront create-invalidation
+        --distribution-id {{ cloudfront_dist_id }}
+        --paths "/*"
