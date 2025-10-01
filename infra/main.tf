@@ -36,3 +36,11 @@ module "services" {
         aws = aws.ue2
     }
 }
+
+module "frontend" {
+    source = "./modules/frontend"
+    
+    providers = {
+        aws = aws.ue2
+    }
+}
