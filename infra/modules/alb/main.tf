@@ -35,7 +35,7 @@ resource "aws_lb_target_group" "reservas" {
         enabled = true
         healthy_threshold = 3
         unhealthy_threshold = 3
-        path = "/propiedades"
+        path = "/reservas"
         port = 80
         timeout = 5
         matcher = "200"
