@@ -13,11 +13,11 @@ module "vpc-sa-east-1" {
 }
 
 module "s3" {
-   source = "./modules/s3"
-   providers = {
-       aws.ue2 = aws.ue2
-       aws.se1 = aws.se1
-   }
+ source = "./modules/s3"
+ providers = {
+     aws.ue2 = aws.ue2
+     aws.se1 = aws.se1
+ }
 }
 
 module "alb" {
@@ -28,5 +28,19 @@ module "alb" {
 
     providers = {
       aws = aws.ue2
+    }
+}
+
+module "services" {
+    source = "./modules/services"
+    aws-account-id = var.aws-account-id
+    vpc-id = module.vpc-us-east-2.vpc-id
+    service-sg-id = module.vpc-us-east-2.services-sg-id
+    app-subnet = module.vpc-us-east-2.app-subnet
+    propiedades-tg = module.alb.propiedades-tg
+    reservas-tg = module.alb.reservas-tg
+
+    providers = {
+        aws = aws.ue2
     }
 }
