@@ -216,6 +216,7 @@ body {
 }
 
 /* ========== DARK MODE ========== */
+/* 
 @media (prefers-color-scheme: dark){
   :root{
     --ink: #e6e9ef;
@@ -259,6 +260,7 @@ body {
     box-shadow: 0 12px 26px rgba(108,92,231,.35);
   }
 }
+  */
 
 /* ========== PEQUEÑAS UTILIDADES (opcionales) ========== */
 /* Suaviza transiciones en botones auxiliares (ordenar, toggle vista, limpiar) */
