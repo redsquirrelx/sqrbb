@@ -97,6 +97,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   vpc_endpoint_type = "Interface"
   subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
   security_group_ids = [ aws_security_group.endpoints.id ]
+  private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
@@ -105,6 +106,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_endpoint_type = "Interface"
   subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
   security_group_ids = [ aws_security_group.endpoints.id ]
+  private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "s3" {
