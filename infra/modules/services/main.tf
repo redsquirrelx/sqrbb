@@ -6,6 +6,16 @@ terraform {
   }
 }
 
+resource "aws_ecr_repository" "msrvc-reservas" {
+  name                 = "msrvc/reservas"
+  image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_repository" "msrvc-propiedades" {
+  name                 = "msrvc/propiedades"
+  image_tag_mutability = "MUTABLE"
+}
+
 resource "aws_iam_policy" "ecs-task-execution" {
     name        = "ecs-task-execution"
     path        = "/"
@@ -68,7 +78,7 @@ resource "aws_ecs_task_definition" "propiedades-td" {
     container_definitions = jsonencode([
         {
             name      = "msrvc-propiedades"
-            image     = "${var.aws-account-id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/microservices/propiedades:latest"
+            image     = aws_ecr_repository.msrvc-propiedades.repository_url
             cpu       = 1
             memory    = 1024
             essential = true
@@ -96,7 +106,7 @@ resource "aws_ecs_task_definition" "reservas-td" {
     container_definitions = jsonencode([
         {
             name      = "msrvc-reservas"
-            image     = "${var.aws-account-id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/microservices/reservas:latest"
+            image     = aws_ecr_repository.msrvc-reservas.repository_url
             cpu       = 1
             memory    = 1024
             essential = true
