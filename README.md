@@ -20,7 +20,8 @@ El sistema se despliega en AWS bajo la arquitectura de microservicios, la infrae
 - aws-cli >= 2.30.1
 
 # Arquitectura
-<img width="5217" height="3009" alt="Diagrama IaC - Página 1" src="https://github.com/user-attachments/assets/d1256bea-1b51-445a-871b-c02736e57b07" />
+Se aspira a lo siguiente:
+<img width="6492" height="4037" alt="Diagrama IaC - Página 1 (2)" src="https://github.com/user-attachments/assets/dbe8aafc-aadb-4881-9e59-ef2db46b9d44" />
 
 # Uso
 1. Configurar aws-cli con las credenciales de una cuenta AWS
