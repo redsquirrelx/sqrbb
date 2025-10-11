@@ -25,7 +25,6 @@ module "alb" {
 
 module "services" {
     source = "./modules/services"
-    aws-account-id = var.aws-account-id
     vpc-id = module.vpc-us-east-2.vpc-id
     service-sg-id = module.vpc-us-east-2.services-sg-id
     app-subnet = module.vpc-us-east-2.app-subnet
@@ -44,3 +43,5 @@ module "frontend" {
         aws = aws.ue2
     }
 }
+
+data "aws_caller_identity" "current" { }
