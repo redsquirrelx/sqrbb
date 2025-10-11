@@ -44,7 +44,6 @@ cd sqrbb
 terraform -chdir=infra/ init
 terraform -chdir=infra/ apply
 ```
-Solicitará un código de cuenta de AWS.
 
 5. Desplegar front end
 ```
