@@ -8,7 +8,7 @@
 
   tasks:
     - name: aws sync
-      command: aws s3 sync {{project_root}}/frontend s3://redsqx-static-web-front --delete
+      command: aws s3 sync {{project_root}}/frontend s3://redsqx-static-web --delete
   
     - name: invalidar cloudfront
       command: >

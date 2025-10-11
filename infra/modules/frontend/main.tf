@@ -8,11 +8,11 @@ terraform {
 }
 
 resource "aws_s3_bucket" "this" {
-    bucket = "redsqx-static-web-front"
+    bucket = "redsqx-static-web"
     force_destroy = true
 
     tags = {
-      Name = "redsqx-static-web-front"
+      Name = "redsqx-static-web"
     }
 }
 
