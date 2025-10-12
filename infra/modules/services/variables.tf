@@ -1,6 +1,6 @@
 variable "service-sg" { }
 
-variable "app-subnet" { }
+variable "service-subnets" { }
 
 variable "propiedades-tg" { }
 

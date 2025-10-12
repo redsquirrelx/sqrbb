@@ -140,7 +140,7 @@ resource "aws_ecs_service" "propiedades" {
 
     network_configuration {
         security_groups = [ var.service-sg.id ]
-        subnets = [for subnet in var.app-subnet : subnet.id ]
+        subnets = [for subnet in var.service-subnets : subnet.id ]
     }
 
     load_balancer {
@@ -161,7 +161,7 @@ resource "aws_ecs_service" "reservas" {
 
     network_configuration {
         security_groups = [ var.service-sg.id ]
-        subnets = [for subnet in var.app-subnet : subnet.id ]
+        subnets = [for subnet in var.service-subnets : subnet.id ]
     }
 
     load_balancer {

@@ -16,7 +16,7 @@ module "alb" {
     source = "./modules/alb"
     vpc-id = module.vpc-us-east-2.vpc-id
     alb-sg = module.vpc-us-east-2.alb-sg
-    alb-subnet = module.vpc-us-east-2.alb-subnet
+    alb-subnets = module.vpc-us-east-2.alb-subnets
 
     providers = {
       aws = aws.ue2
@@ -27,7 +27,7 @@ module "services" {
     source = "./modules/services"
     vpc-id = module.vpc-us-east-2.vpc-id
     service-sg = module.vpc-us-east-2.service-sg
-    app-subnet = module.vpc-us-east-2.app-subnet
+    service-subnets = module.vpc-us-east-2.service-subnets
     propiedades-tg = module.alb.propiedades-tg
     reservas-tg = module.alb.reservas-tg
 

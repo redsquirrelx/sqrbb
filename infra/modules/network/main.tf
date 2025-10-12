@@ -103,7 +103,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id            = aws_vpc.this.id
   service_name      = "com.amazonaws.${data.aws_region.current.region}.ecr.api"
   vpc_endpoint_type = "Interface"
-  subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
+  subnet_ids        = [ for subnet in aws_subnet.service-subnets: subnet.id ]
   security_group_ids = [ aws_security_group.endpoints.id ]
   private_dns_enabled = true
 }
@@ -112,7 +112,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id            = aws_vpc.this.id
   service_name      = "com.amazonaws.${data.aws_region.current.region}.ecr.dkr"
   vpc_endpoint_type = "Interface"
-  subnet_ids        = [ for subnet in aws_subnet.app-subnet: subnet.id ]
+  subnet_ids        = [ for subnet in aws_subnet.service-subnets: subnet.id ]
   security_group_ids = [ aws_security_group.endpoints.id ]
   private_dns_enabled = true
 }
@@ -121,5 +121,5 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.this.id
   service_name      = "com.amazonaws.${data.aws_region.current.region}.s3"
   vpc_endpoint_type = "Gateway"
-  route_table_ids   = [ aws_route_table.app-subnet-rt.id ]
+  route_table_ids   = [ aws_route_table.service.id ]
 }

@@ -12,10 +12,12 @@ output "service-sg" {
     value = aws_security_group.service
 }
 
-output "alb-subnet" {
-    value = aws_subnet.alb-subnet
+# Subnets
+
+output "alb-subnets" {
+    value = aws_subnet.alb-subnets
 }
 
-output "app-subnet" {
-    value = aws_subnet.app-subnet
+output "service-subnets" {
+    value = aws_subnet.service-subnets
 }
