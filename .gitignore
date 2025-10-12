@@ -1,5 +1,6 @@
 .terraform.lock.hcl
 node_modules/
+.vscode/
 
 # Local .terraform directories
 .terraform/
