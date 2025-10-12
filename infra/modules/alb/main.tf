@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "reservas" {
 
 resource "aws_lb" "this" {
     name               = "main-alb"
-    internal           = false
+    internal           = true
     load_balancer_type = "application"
     security_groups    = [ var.alb-sg-id ]
     subnets            = [ for subnet in var.alb-subnet : subnet.id ]
