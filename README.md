@@ -1,4 +1,4 @@
-# Infraestructura para un sistema de reservas de alojamientos
+<img width="6755" height="4037" alt="Diagrama IaC - Página 1 (3)" src="https://github.com/user-attachments/assets/af176afe-3daf-4836-bccc-c15e7b019a3f" /># Infraestructura para un sistema de reservas de alojamientos
 
 Integrantes:
 - Aguilar Chavez Fabricio 
@@ -21,7 +21,8 @@ El sistema se despliega en AWS bajo la arquitectura de microservicios, la infrae
 
 # Arquitectura
 Se aspira a lo siguiente:
-<img width="6492" height="4037" alt="Diagrama IaC - Página 1 (2)" src="https://github.com/user-attachments/assets/dbe8aafc-aadb-4881-9e59-ef2db46b9d44" />
+<img width="6755" height="4037" alt="Diagrama IaC - Página 1 (3)" src="https://github.com/user-attachments/assets/4a2fbc88-54cf-4076-ad1e-63efaa76591c" />
+
 
 # Uso
 1. Configurar aws-cli con las credenciales de una cuenta AWS
