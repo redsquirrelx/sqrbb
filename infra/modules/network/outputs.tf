@@ -2,8 +2,14 @@ output "vpc-id" {
     value = aws_vpc.this.id
 }
 
-output "alb-sg-id" {
-    value = aws_security_group.alb-sg.id
+# SGs
+
+output "alb-sg" {
+    value = aws_security_group.alb
+}
+
+output "service-sg" {
+    value = aws_security_group.service
 }
 
 output "alb-subnet" {
@@ -12,8 +18,4 @@ output "alb-subnet" {
 
 output "app-subnet" {
     value = aws_subnet.app-subnet
-}
-
-output "services-sg-id" {
-    value = aws_security_group.services-sg.id
 }

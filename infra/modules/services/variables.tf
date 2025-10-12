@@ -1,4 +1,4 @@
-variable "service-sg-id" { }
+variable "service-sg" { }
 
 variable "app-subnet" { }
 

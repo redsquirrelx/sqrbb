@@ -139,7 +139,7 @@ resource "aws_ecs_service" "propiedades" {
     launch_type = "FARGATE"
 
     network_configuration {
-        security_groups = [ var.service-sg-id ]
+        security_groups = [ var.service-sg.id ]
         subnets = [for subnet in var.app-subnet : subnet.id ]
     }
 
@@ -160,7 +160,7 @@ resource "aws_ecs_service" "reservas" {
     launch_type = "FARGATE"
 
     network_configuration {
-        security_groups = [ var.service-sg-id ]
+        security_groups = [ var.service-sg.id ]
         subnets = [for subnet in var.app-subnet : subnet.id ]
     }
 

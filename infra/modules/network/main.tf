@@ -31,12 +31,12 @@ resource "aws_security_group" "vpc-link" {
 
 resource "aws_vpc_security_group_egress_rule" "vpc-link" {
     security_group_id = aws_security_group.vpc-link.id
-    referenced_security_group_id = aws_security_group.alb-sg.id
+    referenced_security_group_id = aws_security_group.alb.id
     ip_protocol = "-1"
 }
 
 ## ALB-SG
-resource "aws_security_group" "alb-sg" {
+resource "aws_security_group" "alb" {
     vpc_id = aws_vpc.this.id
     name = "alb-sg"
     tags = {
@@ -44,20 +44,20 @@ resource "aws_security_group" "alb-sg" {
     }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "alb-sg-ingress" {
-    security_group_id = aws_security_group.alb-sg.id
+resource "aws_vpc_security_group_ingress_rule" "alb" {
+    security_group_id = aws_security_group.alb.id
     referenced_security_group_id = aws_security_group.vpc-link.id
     ip_protocol = "-1"
 }
 
-resource "aws_vpc_security_group_egress_rule" "alb-sg-egress" {
-    security_group_id = aws_security_group.alb-sg.id
-    referenced_security_group_id = aws_security_group.services-sg.id
+resource "aws_vpc_security_group_egress_rule" "alb" {
+    security_group_id = aws_security_group.alb.id
+    referenced_security_group_id = aws_security_group.service.id
     ip_protocol = "-1"
 }
 
 ## SERVICES-SG
-resource "aws_security_group" "services-sg" {
+resource "aws_security_group" "service" {
     vpc_id = aws_vpc.this.id
     name = "services-sg"
     tags = {
@@ -65,14 +65,14 @@ resource "aws_security_group" "services-sg" {
     }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "services-sg-ingress" {
-   security_group_id = aws_security_group.services-sg.id
-   referenced_security_group_id = aws_security_group.alb-sg.id
+resource "aws_vpc_security_group_ingress_rule" "service" {
+   security_group_id = aws_security_group.service.id
+   referenced_security_group_id = aws_security_group.alb.id
    ip_protocol = "-1"
 }
 
-resource "aws_vpc_security_group_egress_rule" "services-sg-egress" {
-    security_group_id = aws_security_group.services-sg.id
+resource "aws_vpc_security_group_egress_rule" "service" {
+    security_group_id = aws_security_group.service.id
     cidr_ipv4 = "0.0.0.0/0"
     ip_protocol = "-1"
 }
@@ -87,7 +87,7 @@ resource "aws_security_group" "endpoints" {
 
 resource "aws_vpc_security_group_ingress_rule" "endpoints" {
    security_group_id = aws_security_group.endpoints.id
-    referenced_security_group_id = aws_security_group.services-sg.id
+    referenced_security_group_id = aws_security_group.service.id
     ip_protocol                  = "-1"
 }
 

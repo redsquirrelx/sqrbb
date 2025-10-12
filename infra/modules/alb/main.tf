@@ -46,7 +46,7 @@ resource "aws_lb" "this" {
     name               = "main-alb"
     internal           = true
     load_balancer_type = "application"
-    security_groups    = [ var.alb-sg-id ]
+    security_groups    = [ var.alb-sg.id ]
     subnets            = [ for subnet in var.alb-subnet : subnet.id ]
    ip_address_type = "ipv4"
 
