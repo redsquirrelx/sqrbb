@@ -20,6 +20,21 @@ resource "aws_vpc" "this" {
 
 #### SECURITY GROUPS
 
+## VPC-LINK-SG
+resource "aws_security_group" "vpc-link" {
+    vpc_id = aws_vpc.this.id
+    name = "vpc-link-sg"
+    tags = {
+        Name = "vpc-link-sg"
+    }
+}
+
+resource "aws_vpc_security_group_egress_rule" "vpc-link" {
+    security_group_id = aws_security_group.vpc-link.id
+    referenced_security_group_id = aws_security_group.alb-sg.id
+    ip_protocol = "-1"
+}
+
 ## ALB-SG
 resource "aws_security_group" "alb-sg" {
     vpc_id = aws_vpc.this.id
@@ -31,7 +46,7 @@ resource "aws_security_group" "alb-sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "alb-sg-ingress" {
     security_group_id = aws_security_group.alb-sg.id
-    cidr_ipv4 = "0.0.0.0/0"
+    referenced_security_group_id = aws_security_group.vpc-link.id
     ip_protocol = "-1"
 }
 
