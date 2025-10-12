@@ -5,3 +5,7 @@ output "propiedades-tg" {
 output "reservas-tg" {
     value = aws_lb_target_group.reservas
 }
+
+output "listener" {
+    value = aws_lb_listener.this
+}

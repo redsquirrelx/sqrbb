@@ -12,6 +12,10 @@ output "service-sg" {
     value = aws_security_group.service
 }
 
+output "vpc-link-sg" {
+    value = aws_security_group.vpc-link
+}
+
 # Subnets
 
 output "alb-subnets" {

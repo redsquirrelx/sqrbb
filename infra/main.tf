@@ -36,6 +36,18 @@ module "services" {
     }
 }
 
+module "api-gateway" {
+    source = "./modules/api-gateway"
+
+    vpc-link-sg = module.vpc-us-east-2.vpc-link-sg
+    alb-subnets = module.vpc-us-east-2.alb-subnets
+    alb-listener = module.alb.listener
+    
+    providers = {
+        aws = aws.ue2
+    }
+}
+
 module "frontend" {
     source = "./modules/frontend"
     
