@@ -1,4 +1,4 @@
-<img width="6755" height="4037" alt="Diagrama IaC - Página 1 (3)" src="https://github.com/user-attachments/assets/af176afe-3daf-4836-bccc-c15e7b019a3f" /># Infraestructura para un sistema de reservas de alojamientos
+# Infraestructura para un sistema de reservas de alojamientos
 
 Integrantes:
 - Aguilar Chavez Fabricio 
