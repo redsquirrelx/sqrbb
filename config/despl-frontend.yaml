@@ -7,8 +7,15 @@
     cloudfront_dist_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cloudfront-dist-id') }}"
 
   tasks:
-    - name: aws sync
-      command: aws s3 sync {{project_root}}/frontend s3://redsqx-static-web --delete
+    - name: subir archivos frontend
+      command: >
+        aws s3 sync 
+        {{project_root}}/frontend 
+        s3://redsqx-{{ item }}-web-dist --delete
+      loop:
+        - "us-east-2"
+        - "sa-east-1"
+        - "eu-west-1"
   
     - name: invalidar cache cloudfront
       command: >
