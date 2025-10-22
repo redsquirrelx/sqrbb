@@ -3,94 +3,82 @@ terraform {
     aws = {
         source = "hashicorp/aws"
         version = "6.14.1"
+        configuration_aliases = [ aws.ue2, aws.ue1, aws.se1, aws.ew1 ]
     }
   }
 }
 
-resource "aws_s3_bucket" "this" {
-    bucket = "redsqx-static-web"
+resource "aws_s3_bucket" "us-east-2" {
+    provider = aws.ue2
+
+    bucket = "redsqx-us-east-2-web-dist"
+    force_destroy = true
+    
+    tags = {
+      Name = "redsqx us-east-2 web dist"
+    }
+}
+
+resource "aws_s3_bucket" "sa-east-1" {
+    provider = aws.se1
+
+    bucket = "redsqx-sa-east-1-web-dist"
     force_destroy = true
 
     tags = {
-      Name = "redsqx-static-web"
+      Name = "redsqx sa-east-1 web dist"
     }
 }
 
-data "aws_iam_policy_document" "origin_bucket_policy" {
-    statement {
-        sid    = "AllowCloudFrontServicePrincipalReadWrite"
-        effect = "Allow"
+resource "aws_s3_bucket" "eu-west-1" {
+    provider = aws.ew1
 
-        principals {
-            type        = "Service"
-            identifiers = ["cloudfront.amazonaws.com"]
-        }
-        actions = [
-            "s3:GetObject",
-            "s3:PutObject",
-        ]
-        resources = [
-            "${aws_s3_bucket.this.arn}/*",
-        ]
-        condition {
-            test     = "StringEquals"
-            variable = "AWS:SourceArn"
-            values   = [aws_cloudfront_distribution.s3_distribution.arn]
-        }
-    }
-}
-
-resource "aws_s3_bucket_policy" "this" {
-    bucket = aws_s3_bucket.this.bucket
-    policy = data.aws_iam_policy_document.origin_bucket_policy.json
-}
-
-locals {
-  origin_id = "s3Origin"
-}
-
-resource "aws_cloudfront_origin_access_control" "default" {
-    name                              = "default-oac"
-    origin_access_control_origin_type = "s3"
-    signing_behavior                  = "always"
-    signing_protocol                  = "sigv4"
-}
-
-resource "aws_cloudfront_distribution" "s3_distribution" {
-    origin {
-        domain_name              = aws_s3_bucket.this.bucket_regional_domain_name
-        origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-        origin_id = local.origin_id
-    }
-
-    default_cache_behavior {
-        target_origin_id        = local.origin_id
-        viewer_protocol_policy  = "allow-all"
-        allowed_methods         = [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
-        cached_methods          = [ "GET", "HEAD" ]
-
-        forwarded_values {
-            query_string = false
-            cookies {
-                forward = "none"
-            }
-        }
-    }
-
-    restrictions {
-        geo_restriction {
-            restriction_type = "none"
-        }
-    }
-    
-    viewer_certificate {
-        cloudfront_default_certificate = true
-    }
+    bucket = "redsqx-eu-west-1-web-dist"
+    force_destroy = true
 
     tags = {
-        Name = "Sqrbb"
+      Name = "redsqx eu-west-1 web dist"
     }
+}
 
-    enabled = true
-    default_root_object = "index.html"
+resource "aws_s3_bucket_versioning" "us-east-2" {
+    provider = aws.ue2
+    bucket = aws_s3_bucket.us-east-2.id
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
+
+resource "aws_s3_bucket_versioning" "sa-east-1" {
+    provider = aws.se1
+    bucket = aws_s3_bucket.sa-east-1.id
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
+
+resource "aws_s3_bucket_versioning" "eu-west-1" {
+    provider = aws.ew1
+    bucket = aws_s3_bucket.eu-west-1.id
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
+
+resource "aws_s3control_multi_region_access_point" "staticpage" {
+    details {
+        name = "redsqx-mrap-web-dist"
+
+        region {
+            bucket = aws_s3_bucket.us-east-2.id
+        }
+
+        region {
+            bucket = aws_s3_bucket.sa-east-1.id
+        }
+        
+        region {
+            bucket = aws_s3_bucket.eu-west-1.id
+        }
+    }
 }

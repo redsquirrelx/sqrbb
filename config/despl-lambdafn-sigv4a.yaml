@@ -1,0 +1,86 @@
+- name: Desplegar lambda fn "sigv4a"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+    cloudfront_dist_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cloudfront-dist-id') }}"
+    lambda_function_name: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw lmbd-fn-sigv4a-arn') }}"
+    lambda_fn_root: "{{ project_root }}/lambdas/sigv4a"
+
+  tasks:
+    - name: descargar dependencias
+      command: npm i {{ lambda_fn_root }}
+    
+    - name: empaquetar
+      command: >
+        chdir={{ lambda_fn_root }} 
+        zip -r function.zip 
+        index.mjs sigv4a_sign.js node_modules
+    
+    - name: actualizar función lambda
+      command: > 
+        aws lambda update-function-code 
+        --function-name {{lambda_function_name}} 
+        --zip-file fileb://{{lambda_fn_root}}/function.zip 
+        --region us-east-1
+
+    - name: publicar nueva versión lambda
+      register: publish_version
+      command: >
+        aws lambda publish-version 
+        --function-name {{lambda_function_name}} 
+        --region us-east-1
+    
+    - name: obtener conf. de la dist. de cloudfront
+      register: dist_config
+      command: >
+        aws cloudfront get-distribution-config
+        --id {{ cloudfront_dist_id }}
+    
+    - name: extraer conf. de cloudfront y nuevo arn del lambda
+      set_fact:
+        config: "{{ (dist_config.stdout | from_json).DistributionConfig }}"
+        etag: "{{ (dist_config.stdout | from_json).ETag }}"
+        new_arn: "{{ (publish_version.stdout | from_json).FunctionArn }}"
+    
+    - name: actualizar arn del lambda
+      set_fact:
+        new_config: >-
+          {{ config | combine({
+                "DefaultCacheBehavior": {
+                  "LambdaFunctionAssociations": {
+                    "Quantity": 1,
+                    "Items": [
+                      {
+                        "LambdaFunctionARN": new_arn,
+                        "EventType": "origin-request",
+                        "IncludeBody": False
+                      }
+                    ]
+                  }
+                }
+            }, recursive=true) 
+          }}
+        new_config_dst: "new_dist_config.json"
+    
+    - name: guardar nueva conf.
+      ansible.builtin.copy:
+        dest: "{{ lambda_fn_root }}/{{ new_config_dst }}"
+        content: "{{ new_config | to_nice_json }}"
+    
+    - name: actualizar conf. de la distribución cloudfront
+      command: >
+        aws cloudfront update-distribution
+        --id {{ cloudfront_dist_id }}
+        --if-match {{ etag }}
+        --distribution-config file://{{ lambda_fn_root }}/{{ new_config_dst }}
+    
+    - name: limpiar conf. temporal
+      ansible.builtin.file:
+        path: "{{ lambda_fn_root }}/{{ new_config_dst }}"
+        state: absent
+
+    - name: mostrar nuevo arn
+      ansible.builtin.debug:
+        msg: "Nuevo FunctionArn: {{ new_arn }}"

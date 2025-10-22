@@ -1,3 +1,3 @@
-output "cloudfront-dist-id" {
-    value = aws_cloudfront_distribution.s3_distribution.id
+output "mrap" {
+    value = aws_s3control_multi_region_access_point.staticpage
 }

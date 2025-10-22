@@ -52,8 +52,27 @@ module "frontend" {
     source = "./modules/frontend"
     
     providers = {
-        aws = aws.ue2
+        aws.ue1 = aws.ue1
+        aws.ue2 = aws.ue2
+        aws.se1 = aws.se1
+        aws.ew1 = aws.ew1
     }
+}
+
+module "lambda" {
+    source = "./modules/lambda"
+
+    providers = {
+        aws = aws.ue1
+    }
+
+    mrap = module.frontend.mrap
+}
+
+module "cloudfront" {
+    source = "./modules/cloudfront"
+    mrap = module.frontend.mrap
+    sigv4a-lmbd-fn = module.lambda.lambda-fn-sigv4a
 }
 
 data "aws_caller_identity" "current" { }
