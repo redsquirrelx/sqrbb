@@ -18,6 +18,7 @@ El sistema se despliega en AWS bajo la arquitectura de microservicios, la infrae
 - Docker >= 28.4.0
 - Ansible >= 2.18.9
 - aws-cli >= 2.30.1
+- node >= 22.x
 
 # Arquitectura
 Se aspira a lo siguiente:
@@ -46,7 +47,12 @@ terraform -chdir=infra/ init
 terraform -chdir=infra/ apply
 ```
 
-5. Desplegar front end
+5. Desplegar lambda "sigv4a"
 ```
-ansible-playbook -i config/inventory.ini config/desplegar-frontend.yaml
+ansible-playbook -i config/inventory.ini config/despl-lambdafn-sigv4a.yaml
+```
+
+6. Desplegar front end
+```
+ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
 ```
