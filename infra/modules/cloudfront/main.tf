@@ -25,12 +25,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         allowed_methods         = [ "GET", "HEAD" ]
         cached_methods          = [ "GET", "HEAD" ]
 
-        forwarded_values {
-            query_string = false
-            cookies {
-                forward = "none"
-            }
-        }
+        # Para CachingOptimized
+        cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
         
         lambda_function_association {
             event_type   = "origin-request"
