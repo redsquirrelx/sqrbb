@@ -43,7 +43,7 @@ terraform -chdir=infra/ init
 terraform -chdir=infra/ apply
 ```
 
-4. Crear un archivo ``desplegar.json`` con el contenido, dentro de la carpeta ``config/``:
+4. Crear un archivo ``desplegar.json`` dentro de la carpeta ``config/``, con el siguiente contenido:
 ```json
 {
   "microservicios": [
