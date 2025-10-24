@@ -31,28 +31,44 @@ Se aspira a lo siguiente:
 aws configure
 ```
 
-2. Configurar dos repositorios en ECR con las aplicaciones en `services/`:
-- microservices/propiedades
-- microservices/reservas
-
-3. Clonar el repositorio:
+2. Clonar el repositorio:
 ```
 git clone https://github.com/redsquirrelx/sqrbb.git
 cd sqrbb
 ```
 
-4. Levantar arquitectura:
+3. Levantar arquitectura:
 ```
 terraform -chdir=infra/ init
 terraform -chdir=infra/ apply
 ```
 
-5. Desplegar lambda "sigv4a"
+4. Crear un archivo ``desplegar.json`` con el contenido, dentro de la carpeta ``config/``:
+```json
+{
+  "microservicios": [
+    {
+      "name": "propiedades",
+      "root": "services/propiedades"
+    },
+    {
+      "name": "reservas",
+      "root": "services/reservas"
+    }
+  ]
+}
 ```
+5. Desplegar microservicios:
+```bash
+ansible-playbook -i config/inventory.ini config/despl-microservicios.yaml -e "@config/desplegar.json"
+```
+5. Desplegar lambda "sigv4a"
+```bash
 ansible-playbook -i config/inventory.ini config/despl-lambdafn-sigv4a.yaml
 ```
 
 6. Desplegar front end
-```
+```bash
 ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
 ```
+7. Desplegar API Gateway en la consola AWS (temporal)
