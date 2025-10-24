@@ -14,6 +14,21 @@ resource "aws_s3_bucket" "access_logs" {
     }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
+    bucket = aws_s3_bucket.access_logs.bucket
+
+    rule {
+        id = "1"
+        filter {
+            prefix = "AWSLogs/"
+        }
+        expiration {
+          days = 365
+        }
+        status = "Enabled"
+    }
+}
+
 data "aws_iam_policy_document" "alb_access_logs" {
     statement {
         sid = "PermitirALBAccessLog"
