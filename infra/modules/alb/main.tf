@@ -48,7 +48,9 @@ resource "aws_lb" "this" {
     load_balancer_type = "application"
     security_groups    = [ var.alb-sg.id ]
     subnets            = [ for subnet in var.alb-subnets : subnet.id ]
-   ip_address_type = "ipv4"
+    ip_address_type = "ipv4"
+
+    enable_deletion_protection = true
 
     tags = {
         Name = "main-alb"
