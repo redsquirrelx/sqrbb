@@ -27,12 +27,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
         # Para CachingOptimized
         cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-        
-        lambda_function_association {
-            event_type   = "origin-request"
-            lambda_arn   = var.sigv4a-lmbd-fn.qualified_arn
-            include_body = false
-        }
     }
 
     restrictions {
