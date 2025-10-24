@@ -51,6 +51,7 @@ resource "aws_lb" "this" {
     ip_address_type = "ipv4"
 
     enable_deletion_protection = true
+    drop_invalid_header_fields = true
 
     access_logs {
         enabled = true
