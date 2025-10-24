@@ -52,6 +52,11 @@ resource "aws_lb" "this" {
 
     enable_deletion_protection = true
 
+    access_logs {
+        enabled = true
+        bucket = var.access_logs.id
+    }
+
     tags = {
         Name = "main-alb"
     }

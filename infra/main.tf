@@ -5,11 +5,20 @@ module "vpc-us-east-2" {
     }
 }
 
+module "s3" {
+    source = "./modules/s3"
+
+    providers = {
+        aws = aws.ue2
+    }
+}
+
 module "alb" {
     source = "./modules/alb"
     vpc-id = module.vpc-us-east-2.vpc-id
     alb-sg = module.vpc-us-east-2.alb-sg
     alb-subnets = module.vpc-us-east-2.alb-subnets
+    access_logs = module.s3.bucket_access_logs
 
     providers = {
       aws = aws.ue2
