@@ -6,20 +6,10 @@ terraform {
   }
 }
 
-resource "aws_ecr_repository" "msrvc-reservas" {
-  name                 = "msrvc/reservas"
-  image_tag_mutability = "MUTABLE"
-}
-
-resource "aws_ecr_repository" "msrvc-propiedades" {
-  name                 = "msrvc/propiedades"
-  image_tag_mutability = "MUTABLE"
-}
-
-resource "aws_iam_policy" "ecs-task-execution" {
-    name        = "ecs-task-execution"
+resource "aws_iam_policy" "ecs_task_execution" {
+    name        = "ecs_task_execution"
+    description = "ecs_task_execution"
     path        = "/"
-    description = "ecs-task-execution"
 
     policy = jsonencode({
         Version = "2012-10-17"
@@ -40,8 +30,8 @@ resource "aws_iam_policy" "ecs-task-execution" {
     })
 }
 
-resource "aws_iam_role" "ecs-task-execution" {
-   name = "ecs-task-execution"
+resource "aws_iam_role" "ecs_task_execution" {
+   name = "ecs_task_execution"
    assume_role_policy = jsonencode({
        Version = "2012-10-17"
        Statement = [
@@ -57,15 +47,15 @@ resource "aws_iam_role" "ecs-task-execution" {
    })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs-task-execution" {
-    role       = aws_iam_role.ecs-task-execution.name
-    policy_arn = aws_iam_policy.ecs-task-execution.arn
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+    role       = aws_iam_role.ecs_task_execution.name
+    policy_arn = aws_iam_policy.ecs_task_execution.arn
 }
 
-data "aws_region" "current" {}
+resource "aws_ecs_task_definition" "this" {
+    for_each = var.microservices_definition
 
-resource "aws_ecs_task_definition" "propiedades-td" {
-    family = "msrvc-propiedades"
+    family = "msrvc-${ each.value.name }"
     requires_compatibilities = [ "FARGATE" ]
     cpu = 512
     memory = 1024
@@ -73,40 +63,13 @@ resource "aws_ecs_task_definition" "propiedades-td" {
         operating_system_family = "LINUX"
         cpu_architecture = "X86_64"
     }
-    execution_role_arn = aws_iam_role.ecs-task-execution.arn
-    network_mode = "awsvpc"
-    container_definitions = jsonencode([
-        {
-            name      = "msrvc-propiedades"
-            image     = aws_ecr_repository.msrvc-propiedades.repository_url
-            cpu       = 1
-            memory    = 1024
-            essential = true
-            portMappings = [
-                {
-                    containerPort = 80
-                    hostPort      = 80
-                }
-            ]
-        }
-    ])
-}
 
-resource "aws_ecs_task_definition" "reservas-td" {
-    family = "msrvc-reservas"
-    requires_compatibilities = [ "FARGATE" ]
-    cpu = 512
-    memory = 1024
-    runtime_platform {
-        operating_system_family = "LINUX"
-        cpu_architecture = "X86_64"
-    }
-    execution_role_arn = aws_iam_role.ecs-task-execution.arn
+    execution_role_arn = aws_iam_role.ecs_task_execution.arn
     network_mode = "awsvpc"
     container_definitions = jsonencode([
         {
-            name      = "msrvc-reservas"
-            image     = aws_ecr_repository.msrvc-reservas.repository_url
+            name      = "msrvc-${ each.value.name }"
+            image     = each.value.repository_url
             cpu       = 1
             memory    = 1024
             essential = true
@@ -129,44 +92,25 @@ resource "aws_ecs_cluster" "this" {
     }
 }
 
-resource "aws_ecs_service" "propiedades" {
-    name            = "propiedades-srvc"
+resource "aws_ecs_service" "this" {
+    for_each = var.microservices_definition
+
+    name            = "${each.value.name}-srvc"
     cluster         = aws_ecs_cluster.this.id
-    task_definition = aws_ecs_task_definition.propiedades-td.arn
+    task_definition = aws_ecs_task_definition.this[each.value.name].arn
     scheduling_strategy = "REPLICA"
     desired_count   = 2
     availability_zone_rebalancing = "ENABLED"
     launch_type = "FARGATE"
 
     network_configuration {
-        security_groups = [ var.service-sg.id ]
-        subnets = [for subnet in var.service-subnets : subnet.id ]
+        security_groups = [ each.value.security_group.id ]
+        subnets = [for subnet in each.value.subnets : subnet.id ]
     }
 
     load_balancer {
-        target_group_arn = var.propiedades-tg.arn
-        container_name   = "msrvc-propiedades"
-        container_port   = 80
-    }
-}
-
-resource "aws_ecs_service" "reservas" {
-    name            = "reservas-srvc"
-    cluster         = aws_ecs_cluster.this.id
-    task_definition = aws_ecs_task_definition.reservas-td.arn
-    scheduling_strategy = "REPLICA"
-    desired_count   = 2
-    availability_zone_rebalancing = "ENABLED"
-    launch_type = "FARGATE"
-
-    network_configuration {
-        security_groups = [ var.service-sg.id ]
-        subnets = [for subnet in var.service-subnets : subnet.id ]
-    }
-
-    load_balancer {
-        target_group_arn = var.reservas-tg.arn
-        container_name   = "msrvc-reservas"
+        target_group_arn = each.value.target_group.arn
+        container_name   = "msrvc-${each.value.name}"
         container_port   = 80
     }
 }

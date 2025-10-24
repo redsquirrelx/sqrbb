@@ -5,13 +5,6 @@ module "vpc-us-east-2" {
     }
 }
 
-module "vpc-sa-east-1" {
-    source = "./modules/network"
-    providers = {
-        aws = aws.se1
-    }
-}
-
 module "alb" {
     source = "./modules/alb"
     vpc-id = module.vpc-us-east-2.vpc-id
@@ -23,13 +16,39 @@ module "alb" {
     }
 }
 
+module "ecr" {
+    source = "./modules/ecr"
+
+    providers = {
+      aws = aws.ue2
+    }
+}
+
+# Temporal
+locals {
+    microservices  = {
+        propiedades = {
+            name = "propiedades",
+            repository_url = module.ecr.msrvc-propiedades-repository.repository_url,
+            security_group = module.vpc-us-east-2.service-sg
+            subnets = module.vpc-us-east-2.service-subnets
+            target_group = module.alb.propiedades-tg
+        },
+        reservas = {
+            name = "reservas",
+            repository_url = module.ecr.msrvc-reservas-repository.repository_url,
+            security_group = module.vpc-us-east-2.service-sg
+            subnets = module.vpc-us-east-2.service-subnets
+            target_group = module.alb.reservas-tg
+        }
+    }
+}
+
 module "services" {
     source = "./modules/services"
     vpc-id = module.vpc-us-east-2.vpc-id
-    service-sg = module.vpc-us-east-2.service-sg
-    service-subnets = module.vpc-us-east-2.service-subnets
-    propiedades-tg = module.alb.propiedades-tg
-    reservas-tg = module.alb.reservas-tg
+
+    microservices_definition = local.microservices
 
     providers = {
         aws = aws.ue2
