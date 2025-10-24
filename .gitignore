@@ -1,9 +1,13 @@
 .terraform.lock.hcl
 node_modules/
 .vscode/
+
 lambdas/*/*.json
 !lambdas/*/package*.json
 lambdas/*/*.zip
+
+config/**/package.json
+config/**/package-lock.json
 
 # Local .terraform directories
 .terraform/
