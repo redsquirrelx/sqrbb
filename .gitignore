@@ -2,6 +2,7 @@
 node_modules/
 .vscode/
 lambdas/*/*.json
+!lambdas/*/package*.json
 lambdas/*/*.zip
 
 # Local .terraform directories
