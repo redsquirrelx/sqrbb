@@ -20,6 +20,11 @@ resource "aws_vpc" "this" {
 
 #### SECURITY GROUPS
 
+## DEFAULT
+resource "aws_default_security_group" "default" {
+    vpc_id = aws_vpc.this.id
+}
+
 ## VPC-LINK-SG
 resource "aws_security_group" "vpc-link" {
 # checkov:skip=CKV2_AWS_5:SI existen servicios asociados a este SG (modules/api-gateway)
