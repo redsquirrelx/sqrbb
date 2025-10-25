@@ -9,6 +9,8 @@ terraform {
 }
 
 resource "aws_s3_bucket" "us-east-2" {
+# checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+
     provider = aws.ue2
 
     bucket = "redsqx-us-east-2-web-dist"
@@ -20,6 +22,8 @@ resource "aws_s3_bucket" "us-east-2" {
 }
 
 resource "aws_s3_bucket" "sa-east-1" {
+# checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+
     provider = aws.se1
 
     bucket = "redsqx-sa-east-1-web-dist"
@@ -31,6 +35,8 @@ resource "aws_s3_bucket" "sa-east-1" {
 }
 
 resource "aws_s3_bucket" "eu-west-1" {
+# checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+
     provider = aws.ew1
 
     bucket = "redsqx-eu-west-1-web-dist"
