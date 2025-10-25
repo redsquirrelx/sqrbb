@@ -10,6 +10,7 @@ terraform {
 
 resource "aws_s3_bucket" "us-east-2" {
 # checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+# checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 
     provider = aws.ue2
 
@@ -23,6 +24,7 @@ resource "aws_s3_bucket" "us-east-2" {
 
 resource "aws_s3_bucket" "sa-east-1" {
 # checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+# checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 
     provider = aws.se1
 
@@ -36,6 +38,7 @@ resource "aws_s3_bucket" "sa-east-1" {
 
 resource "aws_s3_bucket" "eu-west-1" {
 # checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
+# checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 
     provider = aws.ew1
 
