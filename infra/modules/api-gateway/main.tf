@@ -36,6 +36,7 @@ resource "aws_apigatewayv2_route" "this" {
     api_id    = aws_apigatewayv2_api.this.id
     route_key = "ANY /propiedades"
     target = "integrations/${aws_apigatewayv2_integration.alb.id}"
+    authorization_type = "JWT"
 }
 
 resource "aws_apigatewayv2_stage" "this" {
