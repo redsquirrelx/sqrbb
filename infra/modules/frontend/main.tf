@@ -71,20 +71,50 @@ resource "aws_s3_bucket_versioning" "eu-west-1" {
     }
 }
 
-resource "aws_s3control_multi_region_access_point" "staticpage" {
-    details {
-        name = "redsqx-mrap-web-dist"
+resource "aws_s3_bucket_public_access_block" "us-east-2" {
+    provider = aws.ue2
+    bucket = aws_s3_bucket.us-east-2.id
 
-        region {
-            bucket = aws_s3_bucket.us-east-2.id
-        }
-
-        region {
-            bucket = aws_s3_bucket.sa-east-1.id
-        }
-        
-        region {
-            bucket = aws_s3_bucket.eu-west-1.id
-        }
-    }
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_public_access_block" "sa-east-1" {
+    provider = aws.se1
+    bucket = aws_s3_bucket.sa-east-1.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "eu-west-1" {
+    provider = aws.ew1
+    bucket = aws_s3_bucket.eu-west-1.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+# resource "aws_s3control_multi_region_access_point" "staticpage" {
+#     details {
+#         name = "redsqx-mrap-web-dist"
+
+#         region {
+#             bucket = aws_s3_bucket.us-east-2.id
+#         }
+
+#         region {
+#             bucket = aws_s3_bucket.sa-east-1.id
+#         }
+        
+#         region {
+#             bucket = aws_s3_bucket.eu-west-1.id
+#         }
+#     }
+# }
