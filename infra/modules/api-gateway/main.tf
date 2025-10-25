@@ -6,6 +6,11 @@ terraform {
   }
 }
 
+resource "aws_cloudwatch_log_group" "this" {
+    name = "apigateway_log_group"
+    retention_in_days = 1096
+}
+
 resource "aws_apigatewayv2_vpc_link" "this" {
     name               = "vpc-link-for-alb"
     security_group_ids = [ var.vpc-link-sg.id ]
@@ -42,4 +47,20 @@ resource "aws_apigatewayv2_route" "this" {
 resource "aws_apigatewayv2_stage" "this" {
     api_id = aws_apigatewayv2_api.this.id
     name   = "$default"
+    access_log_settings {
+        destination_arn = aws_cloudwatch_log_group.this.arn
+        format = jsonencode({
+            requestId = "$context.requestId"
+            extendedRequestId = "$context.extendedRequestId"
+            ip = "$context.identity.sourceIp"
+            caller = "$context.identity.caller"
+            user = "$context.identity.user"
+            requestTime = "$context.requestTime"
+            httpMethod = "$context.httpMethod"
+            resourcePath = "$context.resourcePath"
+            status = "$context.status"
+            protocol = "$context.protocol"
+            responseLength = "$context.responseLength"
+        })
+    }
 }
