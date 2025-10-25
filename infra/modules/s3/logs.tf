@@ -7,10 +7,48 @@ terraform {
 }
 
 resource "aws_s3_bucket" "access_logs" {
+# checkov:skip=CKV_AWS_144:No necesita replicación cross-region
     bucket = "redsqx-access-logs"
 
     tags = {
         Name = "Logs"
+    }
+}
+
+resource "aws_s3_bucket_public_access_block" "access_logs" {
+    bucket = aws_s3_bucket.access_logs.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
+    bucket = aws_s3_bucket.access_logs.bucket
+
+    rule {
+        id = "1"
+        status = "Enabled"
+
+        filter {
+            prefix = "AWSLogs/"
+        }
+
+        expiration {
+          days = 365
+        }
+    }
+
+    rule {
+        id = "2"
+        status = "Enabled"
+
+        filter {}
+
+        abort_incomplete_multipart_upload {
+          days_after_initiation = 1
+        }
     }
 }
 
