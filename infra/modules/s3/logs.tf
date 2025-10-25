@@ -19,13 +19,26 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
 
     rule {
         id = "1"
+        status = "Enabled"
+
         filter {
             prefix = "AWSLogs/"
         }
+
         expiration {
           days = 365
         }
+    }
+
+    rule {
+        id = "2"
         status = "Enabled"
+
+        filter {}
+
+        abort_incomplete_multipart_upload {
+          days_after_initiation = 1
+        }
     }
 }
 
