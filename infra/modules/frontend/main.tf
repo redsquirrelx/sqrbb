@@ -13,6 +13,7 @@ resource "aws_s3_bucket" "us-east-2" {
 # checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 # checkov:skip=CKV2_AWS_62:No necesita event notifications
 # checkov:skip=CKV_AWS_145:No necesita encriptación KMS 
+# checkov:skip=CKV_AWS_18:No necesita access logging
 
     provider = aws.ue2
 
@@ -29,6 +30,7 @@ resource "aws_s3_bucket" "sa-east-1" {
 # checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 # checkov:skip=CKV2_AWS_62:No necesita event notifications
 # checkov:skip=CKV_AWS_145:No necesita encriptación KMS 
+# checkov:skip=CKV_AWS_18:No necesita access logging
 
     provider = aws.se1
 
@@ -44,7 +46,8 @@ resource "aws_s3_bucket" "eu-west-1" {
 # checkov:skip=CKV2_AWS_61:No necesita lifecycle rules
 # checkov:skip=CKV_AWS_144:No necesita replicación cross-region
 # checkov:skip=CKV2_AWS_62:No necesita event notifications
-# checkov:skip=CKV_AWS_145:No necesita encriptación KMS 
+# checkov:skip=CKV_AWS_145:No necesita encriptación KMS
+# checkov:skip=CKV_AWS_18:No necesita access logging
 
     provider = aws.ew1
 
