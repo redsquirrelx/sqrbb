@@ -30,11 +30,19 @@ POLICY
 resource "aws_ecr_repository" "msrvc-reservas" {
     name                 = "msrvc/reservas"
     image_tag_mutability = "IMMUTABLE"
+
+    image_scanning_configuration {
+        scan_on_push = true
+    }
 }
 
 resource "aws_ecr_repository" "msrvc-propiedades" {
     name                 = "msrvc/propiedades"
     image_tag_mutability = "IMMUTABLE"
+    
+    image_scanning_configuration {
+        scan_on_push = true
+    }
 }
 
 resource "aws_ecr_lifecycle_policy" "reservas" {
