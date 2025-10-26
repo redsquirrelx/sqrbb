@@ -30,6 +30,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
         # Para CachingOptimized
         cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+
+        # Para Managed-SecurityHeadersPolicy
+        response_headers_policy_id = data.aws_cloudfront_response_headers_policy.SecurityHeadersPolicy.id
     }
 
     restrictions {
@@ -55,4 +58,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
             default_cache_behavior[0].lambda_function_association
         ]
     }
+}
+
+data "aws_cloudfront_response_headers_policy" "SecurityHeadersPolicy" {
+    name = "Managed-SecurityHeadersPolicy"
 }
