@@ -7,6 +7,8 @@ terraform {
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
+# checkov:skip=CKV_AWS_310:failover manejado por MRAP
+
     origin {
         origin_id = "custom_origin"
         domain_name = var.mrap.domain_name
