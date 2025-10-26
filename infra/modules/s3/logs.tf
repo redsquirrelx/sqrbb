@@ -8,6 +8,8 @@ terraform {
 
 resource "aws_s3_bucket" "access_logs" {
 # checkov:skip=CKV_AWS_144:No necesita replicación cross-region
+# checkov:skip=CKV2_AWS_62:No necesita event notifications
+
     bucket = "redsqx-access-logs"
 
     tags = {
