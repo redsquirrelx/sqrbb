@@ -8,6 +8,7 @@ terraform {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
 # checkov:skip=CKV_AWS_310:failover manejado por MRAP
+# checkov:skip=CKV_AWS_86:no necesita access logging
 
     origin {
         origin_id = "custom_origin"
