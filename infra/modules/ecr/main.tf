@@ -28,13 +28,13 @@ POLICY
 }
 
 resource "aws_ecr_repository" "msrvc-reservas" {
-  name                 = "msrvc/reservas"
-  image_tag_mutability = "MUTABLE"
+    name                 = "msrvc/reservas"
+    image_tag_mutability = "IMMUTABLE"
 }
 
 resource "aws_ecr_repository" "msrvc-propiedades" {
-  name                 = "msrvc/propiedades"
-  image_tag_mutability = "MUTABLE"
+    name                 = "msrvc/propiedades"
+    image_tag_mutability = "IMMUTABLE"
 }
 
 resource "aws_ecr_lifecycle_policy" "reservas" {
