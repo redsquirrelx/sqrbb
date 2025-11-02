@@ -155,6 +155,8 @@ resource "aws_vpc_security_group_egress_rule" "service" {
     description = "Permitir egreso hacia cualquier lado (cambiar)"
 }
 
+## ENDPOINTS-SG
+
 resource "aws_security_group" "endpoints" {
     vpc_id = aws_vpc.this.id
     name = "endpoints-sg"
