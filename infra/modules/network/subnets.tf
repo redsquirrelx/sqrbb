@@ -8,7 +8,6 @@ resource "aws_subnet" "alb-subnets" {
     count = length(data.aws_availability_zones.available.names)
     vpc_id = aws_vpc.this.id
     cidr_block = cidrsubnet("10.0.0.0/16", 8, count.index)
-    map_public_ip_on_launch = true
     availability_zone = data.aws_availability_zones.available.names[count.index]
     tags = {
         Name = "alb-subnet-${data.aws_availability_zones.available.names[count.index]}"
