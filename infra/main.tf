@@ -18,7 +18,8 @@ module "alb" {
     vpc-id = module.vpc-us-east-2.vpc-id
     alb-sg = module.vpc-us-east-2.alb-sg
     alb-subnets = module.vpc-us-east-2.alb-subnets
-    access_logs = module.s3.bucket_access_logs
+    access_logs_bucket_id = module.bucket_access_logs.bucket_id
+    acm_cert_arn = aws_acm_certificate.api["us-east-2"].arn
 
     providers = {
       aws = aws.ue2

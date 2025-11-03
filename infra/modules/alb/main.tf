@@ -7,6 +7,7 @@ terraform {
 }
 
 resource "aws_lb_target_group" "propiedades" {
+# checkov:skip=CKV_AWS_378:no manejamos cifrado interno
     vpc_id      = var.vpc-id
     name        = "propiedades-tg"
     port        = 80
@@ -19,6 +20,7 @@ resource "aws_lb_target_group" "propiedades" {
         unhealthy_threshold = 3
         path = "/propiedades"
         port = 80
+        protocol = "HTTP"
         timeout = 5
         matcher = "200"
     }
@@ -37,6 +39,7 @@ resource "aws_lb_target_group" "reservas" {
         unhealthy_threshold = 3
         path = "/reservas"
         port = 80
+        protocol = "HTTP"
         timeout = 5
         matcher = "200"
     }
@@ -63,10 +66,29 @@ resource "aws_lb" "this" {
     }
 }
 
+resource "aws_lb_listener" "http" {
+    load_balancer_arn = aws_lb.this.arn
+    port        = 80
+    protocol    = "HTTP"
+
+    default_action {
+        type = "redirect"
+
+        redirect {
+            protocol = "HTTPS"
+            port = "443"
+            status_code = "HTTP_301"
+        }
+    }
+}
+
 resource "aws_lb_listener" "this" {
     load_balancer_arn = aws_lb.this.arn
-    port              = 80
-    protocol = "HTTP"
+    port        = 443
+    protocol    = "HTTPS"
+    certificate_arn = var.acm_cert_arn
+
+    ssl_policy = "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
 
     default_action {
         type = "fixed-response"
