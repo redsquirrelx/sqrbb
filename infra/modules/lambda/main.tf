@@ -37,8 +37,6 @@ data "aws_iam_policy_document" "sigv4a" {
         resources = [
             "arn:aws:s3:::redsqx-eu-west-1-web-dist/*",
             "arn:aws:s3:::redsqx-eu-west-1-web-dist",
-            "arn:aws:s3:::redsqx-sa-east-1-web-dist/*",
-            "arn:aws:s3:::redsqx-sa-east-1-web-dist",
             "arn:aws:s3:::redsqx-us-east-2-web-dist/*",
             "arn:aws:s3:::redsqx-us-east-2-web-dist",
             "${var.mrap_arn}/*",
