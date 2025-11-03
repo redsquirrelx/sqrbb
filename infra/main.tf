@@ -101,6 +101,7 @@ module "lambda" {
     mrap_arn = aws_s3control_multi_region_access_point.staticpage.arn
     bucket_lambda_bucket = module.bucket_lambda.bucket
     bucket_lambda_id = module.bucket_lambda.bucket_id
+    bucket_staticweb_arns = [ for item in module.bucket_staticweb : item.bucket_arn ]
 }
 
 module "cloudfront" {

@@ -9,7 +9,7 @@ module "bucket_staticweb" {
     for_each = local.regions
 
     source = "./modules/s3bucket"
-    bucket_name = "redsqx-${each.key}-lambda"
+    bucket_name = "redsqx-${each.key}-staticweb"
     region = each.key
 }
 
