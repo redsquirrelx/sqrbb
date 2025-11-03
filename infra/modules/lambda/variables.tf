@@ -1,1 +1,1 @@
-variable "mrap" { }
+variable "mrap_arn" {}
