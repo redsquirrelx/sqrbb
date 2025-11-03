@@ -4,4 +4,4 @@ variable "alb-sg" { }
 
 variable "alb-subnets" { }
 
-variable "access_logs" { }
+variable "access_logs_bucket_id" { }

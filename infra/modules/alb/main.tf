@@ -55,7 +55,7 @@ resource "aws_lb" "this" {
 
     access_logs {
         enabled = true
-        bucket = var.access_logs.id
+        bucket = var.access_logs_bucket_id
     }
 
     tags = {
