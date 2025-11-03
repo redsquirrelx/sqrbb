@@ -71,6 +71,9 @@ module "api-gateway" {
     vpc-link-sg = module.vpc-us-east-2.vpc-link-sg
     alb-subnets = module.vpc-us-east-2.alb-subnets
     alb-listener = module.alb.listener
+    acm_cert_arn = aws_acm_certificate.api["us-east-2"].arn
+    hosted_zone_zone_id = aws_route53_zone.this.zone_id
+    domain_name = var.domain_name
     
     providers = {
         aws = aws.ue2
