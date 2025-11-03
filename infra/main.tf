@@ -98,7 +98,9 @@ module "lambda" {
         aws = aws.ue1
     }
 
-    mrap = module.frontend.mrap
+    mrap_arn = aws_s3control_multi_region_access_point.staticpage.arn
+    bucket_lambda_bucket = module.bucket_lambda.bucket
+    bucket_lambda_id = module.bucket_lambda.bucket_id
 }
 
 module "cloudfront" {

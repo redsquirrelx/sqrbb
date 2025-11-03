@@ -10,6 +10,6 @@ output "lmbd-fn-sigv4a-arn" {
     value = module.lambda.lambda-fn-sigv4a.function_name
 }
 
-output "cluster-main-name" {
-    value = module.services.cluster-main.name
+output "sigv4a-signer-name" {
+    value = module.lambda.sigv4a-signer-name
 }

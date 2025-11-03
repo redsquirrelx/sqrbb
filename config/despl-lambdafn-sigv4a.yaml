@@ -6,6 +6,7 @@
     project_root: "{{ playbook_dir }}/.."
     cloudfront_dist_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cloudfront-dist-id') }}"
     lambda_function_name: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw lmbd-fn-sigv4a-arn') }}"
+    lambda_signer_name: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw sigv4a-signer-name') }}"
     lambda_fn_root: "{{ project_root }}/lambdas/sigv4a"
 
   tasks:
@@ -18,11 +19,36 @@
         zip -r function.zip 
         index.mjs sigv4a_sign.js node_modules
     
+    - name: Subir archivo a un bucket
+      ansible.builtin.command: >
+        aws s3 cp
+        {{ lambda_fn_root }}/function.zip
+        s3://redsqx-us-east-1-lambda/sigv4a/func.zip
+        --region us-east-1
+    
+    - name: Obtener última versión
+      ansible.builtin.command: >
+        aws s3api list-object-versions
+        --bucket redsqx-us-east-1-lambda
+        --prefix sigv4a/func.zip
+        --region us-east-1
+      register: bucket_versions
+
+    - name: Firmar función
+      ansible.builtin.command: >
+        aws signer start-signing-job
+        --source s3={bucketName=redsqx-us-east-1-lambda,key=sigv4a/func.zip,version={{ (bucket_versions.stdout | from_json).Versions[0].VersionId }}}
+        --destination s3={bucketName=redsqx-us-east-1-lambda,prefix=sigv4a/signed-}
+        --profile-name {{ lambda_signer_name }}
+        --region us-east-1
+      register: sign_result
+
     - name: actualizar función lambda
       command: > 
         aws lambda update-function-code 
-        --function-name {{lambda_function_name}} 
-        --zip-file fileb://{{lambda_fn_root}}/function.zip 
+        --function-name {{lambda_function_name}}
+        --s3-bucket redsqx-us-east-1-lambda
+        --s3-key sigv4a/signed-{{ (sign_result.stdout | from_json).jobId }}.zip
         --region us-east-1
 
     - name: publicar nueva versión lambda
