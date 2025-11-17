@@ -6,30 +6,6 @@ terraform {
   }
 }
 
-resource "aws_iam_policy" "ecs_task_execution" {
-    name        = "ecs_task_execution"
-    description = "ecs_task_execution"
-    path        = "/"
-
-    policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [
-            {
-                Effect = "Allow"
-                Action = [
-                    "ecr:GetAuthorizationToken",
-                    "ecr:BatchCheckLayerAvailability",
-                    "ecr:GetDownloadUrlForLayer",
-                    "ecr:BatchGetImage",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents"
-                ]
-                Resource = "*"
-            }
-        ]
-    })
-}
-
 resource "aws_iam_role" "ecs_task_execution" {
    name = "ecs_task_execution"
    assume_role_policy = jsonencode({
@@ -101,7 +77,7 @@ resource "aws_iam_policy" "dynamodb_policy" {
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
     role       = aws_iam_role.ecs_task_execution.name
-    policy_arn = aws_iam_policy.ecs_task_execution.arn
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_ecs_task_definition" "this" {
