@@ -107,8 +107,11 @@ module "lambda" {
 
 module "cloudfront" {
     source = "./modules/cloudfront"
-    mrap = module.frontend.mrap
-    sigv4a-lmbd-fn = module.lambda.lambda-fn-sigv4a
+    mrap_domain_name = aws_s3control_multi_region_access_point.staticpage.domain_name
+    acm_cert_arn = aws_acm_certificate.us_east_1.arn
+    acm_cert_validation = aws_acm_certificate_validation.us_east_1
+    hosted_zone_zone_id = aws_route53_zone.this.zone_id
+    domain_name = var.domain_name
     access_logs_bucket_domain_name = module.bucket_access_logs["us-east-1"].bucket_domain_name
 }
 
