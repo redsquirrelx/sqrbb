@@ -7,12 +7,37 @@ terraform {
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
-# checkov:skip=CKV_AWS_310:failover manejado por MRAP
-# checkov:skip=CKV_AWS_86:no necesita access logging
+    origin_group {
+        origin_id = "failover"
+
+        failover_criteria {
+            status_codes = [ 403, 404, 500, 502 ]
+        }
+
+        member {
+            origin_id = "custom_origin"
+        }
+
+        member {
+            origin_id = "failover_origin"
+        }
+    }
 
     origin {
         origin_id = "custom_origin"
-        domain_name = var.mrap.domain_name
+        domain_name = var.mrap_domain_name
+
+        custom_origin_config {
+          http_port = 80
+          https_port = 443
+          origin_protocol_policy = "https-only"
+          origin_ssl_protocols = [ "TLSv1.2" ]
+        }
+    }
+
+    origin {
+        origin_id = "failover_origin"
+        domain_name = var.mrap_domain_name
 
         custom_origin_config {
           http_port = 80
