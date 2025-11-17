@@ -13,3 +13,15 @@ output "lmbd-fn-sigv4a-arn" {
 output "sigv4a-signer-name" {
     value = module.lambda.sigv4a-signer-name
 }
+
+output "cluster-main-name" {
+    value = module.services.cluster-main.name
+}
+
+output "propiedades_td_arn" {
+    value = module.services.propiedades_td_arn
+}
+
+output "reservas_td_arn" {
+    value = module.services.reservas_td_arn
+}
