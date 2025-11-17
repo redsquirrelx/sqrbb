@@ -47,6 +47,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         }
     }
 
+    aliases = [ var.domain_name ]
+
     default_cache_behavior {
         target_origin_id        = "custom_origin"
         viewer_protocol_policy  = "redirect-to-https"
@@ -155,5 +157,17 @@ resource "aws_wafv2_web_acl" "pass_acl" {
         cloudwatch_metrics_enabled = true
         metric_name                = "waf-metric"
         sampled_requests_enabled   = true
+    }
+}
+
+resource "aws_route53_record" "www" {
+    zone_id = var.hosted_zone_zone_id
+    name    = var.domain_name
+    type    = "A"
+
+    alias {
+        name = aws_cloudfront_distribution.s3_distribution.domain_name
+        zone_id = aws_cloudfront_distribution.s3_distribution.hosted_zone_id
+        evaluate_target_health = true
     }
 }
