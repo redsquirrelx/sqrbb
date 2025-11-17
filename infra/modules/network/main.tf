@@ -89,7 +89,9 @@ resource "aws_vpc_security_group_egress_rule" "vpc-link" {
 
     security_group_id = aws_security_group.vpc-link.id
     referenced_security_group_id = aws_security_group.alb.id
-    ip_protocol = "-1"
+    ip_protocol = "tcp"
+    from_port = 443
+    to_port = 443
 
     description = "Permite enviar peticiones al SG del ALB"
 }
@@ -109,7 +111,9 @@ resource "aws_security_group" "alb" {
 resource "aws_vpc_security_group_ingress_rule" "alb" {
     security_group_id = aws_security_group.alb.id
     referenced_security_group_id = aws_security_group.vpc-link.id
-    ip_protocol = "-1"
+    ip_protocol = "tcp"
+    from_port = 443
+    to_port = 443
 
     description = "Permitir ingreso solo por el SG del VPC Link"
 }
@@ -117,7 +121,9 @@ resource "aws_vpc_security_group_ingress_rule" "alb" {
 resource "aws_vpc_security_group_egress_rule" "alb" {
     security_group_id = aws_security_group.alb.id
     referenced_security_group_id = aws_security_group.service.id
-    ip_protocol = "-1"
+    ip_protocol = "tcp"
+    from_port = 80
+    to_port = 80
 
     description = "Permitir egreso solamente hacia el SG de los servicios"
 }
