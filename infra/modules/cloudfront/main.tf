@@ -80,6 +80,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     enabled = true
     default_root_object = "index.html"
 
+    logging_config {
+        bucket = var.access_logs_bucket_domain_name
+    }
+
     lifecycle {
         ignore_changes = [ 
             default_cache_behavior[0].lambda_function_association
