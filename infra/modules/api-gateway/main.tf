@@ -38,7 +38,7 @@ resource "aws_apigatewayv2_integration" "alb" {
 
 resource "aws_apigatewayv2_route" "this" {
     api_id    = aws_apigatewayv2_api.this.id
-    route_key = "ANY /propiedades"
+    route_key = "ANY /{proxy+}"
     target = "integrations/${aws_apigatewayv2_integration.alb.id}"
 }
 
