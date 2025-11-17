@@ -113,7 +113,10 @@ resource "aws_lb_listener_rule" "propiedades" {
 
     condition {
         path_pattern {
-            values = ["/propiedades"]
+            values = [
+                "/propiedades",
+                "/propiedades/*"
+            ]
         }
     }
 }
@@ -129,7 +132,10 @@ resource "aws_lb_listener_rule" "reservas" {
 
     condition {
         path_pattern {
-            values = ["/reservas"]
+            values = [
+                "/propiedades",
+                "/propiedades/*"
+            ]
         }
     }
 }
