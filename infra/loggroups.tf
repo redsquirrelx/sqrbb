@@ -11,3 +11,10 @@ module "route53_loggroup" {
     name = "route-53"
     kms_arn = aws_kms_key.kms["us-east-1"].arn
 }
+
+module "apigateway_loggroup" {
+    source = "./modules/cloudwatch_loggroup"
+    region = "us-east-2"
+    name = "apigateway"
+    kms_arn = aws_kms_key.kms["us-east-2"].arn
+}

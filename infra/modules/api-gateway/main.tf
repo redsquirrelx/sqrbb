@@ -6,11 +6,6 @@ terraform {
   }
 }
 
-resource "aws_cloudwatch_log_group" "this" {
-    name = "apigateway_log_group"
-    retention_in_days = 1096
-}
-
 resource "aws_apigatewayv2_vpc_link" "this" {
     name               = "vpc-link-for-alb"
     security_group_ids = [ var.vpc-link-sg.id ]
@@ -52,7 +47,7 @@ resource "aws_apigatewayv2_stage" "this" {
     name   = "$default"
     auto_deploy = true
     access_log_settings {
-        destination_arn = aws_cloudwatch_log_group.this.arn
+        destination_arn = var.log_group_arn
         format = jsonencode({
             requestId = "$context.requestId"
             extendedRequestId = "$context.extendedRequestId"

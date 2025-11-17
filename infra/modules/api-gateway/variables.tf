@@ -9,3 +9,5 @@ variable "hosted_zone_zone_id" {}
 variable "acm_cert_arn" {}
 
 variable "domain_name" {}
+
+variable "log_group_arn" {}
