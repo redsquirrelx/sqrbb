@@ -18,7 +18,7 @@ module "alb" {
     vpc-id = module.vpc-us-east-2.vpc-id
     alb-sg = module.vpc-us-east-2.alb-sg
     alb-subnets = module.vpc-us-east-2.alb-subnets
-    access_logs_bucket_id = module.bucket_access_logs.bucket_id
+    access_logs_bucket_id = module.bucket_access_logs["us-east-2"].bucket_id
     acm_cert_arn = aws_acm_certificate.api["us-east-2"].arn
     acm_cert_validation = aws_acm_certificate_validation.api_cert_val
 
