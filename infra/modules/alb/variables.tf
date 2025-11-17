@@ -7,3 +7,5 @@ variable "alb-subnets" { }
 variable "access_logs_bucket_id" { }
 
 variable "acm_cert_arn" {}
+
+variable "acm_cert_validation" {}

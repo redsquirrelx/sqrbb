@@ -98,6 +98,8 @@ resource "aws_lb_listener" "this" {
             status_code  = "503"
         }
     }
+
+    depends_on = [ var.acm_cert_validation ]
 }
 
 resource "aws_lb_listener_rule" "propiedades" {
