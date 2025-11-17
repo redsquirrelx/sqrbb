@@ -55,6 +55,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
             default_cache_behavior[0].lambda_function_association
         ]
     }
+    web_acl_id = aws_wafv2_web_acl.pass_acl.arn
 }
 
 data "aws_cloudfront_cache_policy" "CachingOptimized" {
@@ -63,4 +64,65 @@ data "aws_cloudfront_cache_policy" "CachingOptimized" {
 
 data "aws_cloudfront_response_headers_policy" "SecurityHeadersPolicy" {
     name = "Managed-SecurityHeadersPolicy"
+}
+
+resource "aws_wafv2_web_acl" "pass_acl" {
+# checkov:skip=CKV2_AWS_31
+    name        = "cloudfront-rules"
+    scope       = "CLOUDFRONT"
+    region = "us-east-1"
+
+    default_action {
+        allow {}
+    }
+
+    rule {
+        name     = "AWSManagedRulesAnonymousIpList"
+        priority = 1
+
+        override_action {
+            none {}
+        }
+
+        statement {
+            managed_rule_group_statement {
+                name        = "AWSManagedRulesAnonymousIpList"
+                vendor_name = "AWS"
+            }
+        }
+
+        visibility_config {
+            cloudwatch_metrics_enabled = true
+            metric_name                = "rule-2-metric"
+            sampled_requests_enabled   = true
+        }
+    }
+
+    rule {
+        name     = "AWSManagedRulesKnownBadInputsRuleSet"
+        priority = 2
+
+        override_action {
+            none {}
+        }
+
+        statement {
+            managed_rule_group_statement {
+                name        = "AWSManagedRulesKnownBadInputsRuleSet"
+                vendor_name = "AWS"
+            }
+        }
+
+        visibility_config {
+            cloudwatch_metrics_enabled = true
+            metric_name                = "rule-1-metrics"
+            sampled_requests_enabled   = true
+        }
+    }
+
+    visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "waf-metric"
+        sampled_requests_enabled   = true
+    }
 }
