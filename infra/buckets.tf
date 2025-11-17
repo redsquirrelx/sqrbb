@@ -19,35 +19,21 @@ module "bucket_access_logs" {
     enable_event_notifs = false
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
-    region = "us-east-2"
-    bucket = module.bucket_access_logs.bucket
+resource "aws_s3_bucket_ownership_controls" "access_logs_us_east_1" {
+# checkov:skip=CKV2_AWS_65:es necesario para el access logging de cloudfront
 
     bucket = module.bucket_access_logs["us-east-1"].bucket_id
     region = "us-east-1"
     rule {
-        id = "1"
-        status = "Enabled"
-
-        filter {
-            prefix = "AWSLogs/"
-        }
-
-        expiration {
-          days = 365
-        }
+        object_ownership = "BucketOwnerPreferred"
     }
+}
 
-    rule {
-        id = "2"
-        status = "Enabled"
-
-        filter {}
-
-        abort_incomplete_multipart_upload {
-          days_after_initiation = 1
-        }
-    }
+resource "aws_s3_bucket_acl" "access_logs_us_east_1" {
+    depends_on = [ aws_s3_bucket_ownership_controls.access_logs_us_east_1 ]
+    region = "us-east-1"
+    bucket = module.bucket_access_logs["us-east-1"].bucket_id
+    acl    = "private"
 }
 
 data "aws_iam_policy_document" "alb_access_logs" {
