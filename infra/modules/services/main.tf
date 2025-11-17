@@ -143,4 +143,8 @@ resource "aws_ecs_service" "this" {
         container_name   = "msrvc-${each.value.name}"
         container_port   = 80
     }
+
+    lifecycle {
+        ignore_changes = [ task_definition ]
+    }
 }
