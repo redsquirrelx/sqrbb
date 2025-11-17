@@ -65,6 +65,6 @@ resource "aws_route53domains_registered_domain" "this" {
         }
     }
 
-    transfer_lock = false
+    transfer_lock = true
     auto_renew    = false
 }
