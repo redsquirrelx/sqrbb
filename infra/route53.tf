@@ -19,14 +19,7 @@ resource "aws_route53_hosted_zone_dnssec" "this" {
 resource "aws_route53_query_log" "route53" {
     depends_on               = [ aws_cloudwatch_log_resource_policy.route53_query_logging ]
     zone_id                  = aws_route53_zone.this.id
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.route53.arn
-}
-
-resource "aws_cloudwatch_log_group" "route53" {
-    region = "us-east-1"
-
-    name = "route53-logs"
-    retention_in_days = 365
+    cloudwatch_log_group_arn = module.route53_loggroup.log_group_arn
 }
 
 data "aws_iam_policy_document" "route53_query_logging" {
@@ -37,7 +30,7 @@ data "aws_iam_policy_document" "route53_query_logging" {
         ]
 
         resources = [
-            "${aws_cloudwatch_log_group.route53.arn}:*"
+            "${module.route53_loggroup.log_group_arn}:*"
         ]
 
         principals {
