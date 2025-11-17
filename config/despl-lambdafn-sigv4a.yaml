@@ -52,7 +52,13 @@
         --region us-east-1
 
     - name: publicar nueva versión lambda
+      retries: 5
+      delay: 5
       register: publish_version
+      until: >
+        (publish_version.stdout != "" and
+        ("LastUpdateStatus" in (publish_version.stdout | from_json) and
+        (publish_version.stdout | from_json).LastUpdateStatus == "Successful"))
       command: >
         aws lambda publish-version 
         --function-name {{lambda_function_name}} 
