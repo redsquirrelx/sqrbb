@@ -1,16 +1,14 @@
-locals {
-    regions = {
-        us-east-2 = {}
-        eu-west-1 = {}
-    }
-}
-
 module "bucket_staticweb" {
-    for_each = local.regions
+    for_each = local.bucket_staticweb_regions
 
     source = "./modules/s3bucket"
     bucket_name = "redsqx-${each.key}-staticweb"
     region = each.key
+
+    enable_access_logs = true
+    bucket_access_logs_bucket = module.bucket_access_logs[each.key].bucket
+    replicate = false
+    enable_event_notifs = false
 }
 
 resource "aws_s3control_multi_region_access_point" "staticpage" {
