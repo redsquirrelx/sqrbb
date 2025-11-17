@@ -65,7 +65,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
     
     viewer_certificate {
-        cloudfront_default_certificate = true
+        cloudfront_default_certificate = false
+        minimum_protocol_version = "TLSv1.2_2018"
+        acm_certificate_arn = var.acm_cert_arn
+        ssl_support_method = "sni-only"
     }
 
     tags = {
@@ -80,6 +83,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
             default_cache_behavior[0].lambda_function_association
         ]
     }
+
+    depends_on = [ var.acm_cert_validation ]
+
     web_acl_id = aws_wafv2_web_acl.pass_acl.arn
 }
 
