@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/lib-dynamodb": "^3.927.0",
     "express": "^5.1.0"
   }
 }
