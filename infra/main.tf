@@ -5,8 +5,7 @@ module "vpc-us-east-2" {
     }
 }
 
-module "s3" {
-    source = "./modules/s3"
+    flow_log_group_arn = module.vpc_loggroup.log_group_arn
 
     providers = {
         aws = aws.ue2

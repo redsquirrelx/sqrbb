@@ -18,11 +18,6 @@ resource "aws_vpc" "this" {
     }
 }
 
-resource "aws_cloudwatch_log_group" "flow_log" {
-    name = "flow_log"
-    retention_in_days = 365
-}
-
 data "aws_iam_policy_document" "vpc_assume_role" {
     statement {
         effect = "Allow"
@@ -54,7 +49,7 @@ data "aws_iam_policy_document" "vpc" {
         ]
 
         resources = [
-            aws_cloudwatch_log_group.flow_log.arn
+            var.flow_log_group_arn
         ]
     }
 }
@@ -66,7 +61,7 @@ resource "aws_iam_role_policy" "vpc" {
 
 resource "aws_flow_log" "vpc" {
     iam_role_arn = aws_iam_role.vpc.arn
-    log_destination = aws_cloudwatch_log_group.flow_log.arn
+    log_destination = var.flow_log_group_arn
     traffic_type = "ALL"
     vpc_id = aws_vpc.this.id
 }
