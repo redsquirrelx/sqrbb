@@ -1,0 +1,95 @@
+# variables externas:
+# - msrvc_name: nombre del servicio
+
+- name: Desplegar mcsrvc propiedades
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+    account_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw aws-account-id') }}"
+    msrvc_root: "{{project_root}}/services/{{ msrvc_name }}"
+    task_definition_arn: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw propiedades_td_arn') }}"
+    repo_region: "us-east-2"
+    cluster_name: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cluster-main-name') }}"
+
+  tasks:
+    - name: Autenticar cliente de docker
+      shell: >
+        aws ecr get-login-password 
+        --region us-east-2 |
+        docker login 
+        --username AWS 
+        --password-stdin {{account_id}}.dkr.ecr.{{ repo_region }}.amazonaws.com
+    
+    - name: Generar tag
+      set_fact:
+        img_tag: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+    - name: Construir imagenes
+      ansible.builtin.command: >
+        docker build -t msrvc/{{ msrvc_name }} {{ msrvc_root }}
+      
+    - name: Etiquetar imagenes
+      ansible.builtin.command: >
+        docker tag msrvc/{{ msrvc_name }} {{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
+
+    - name: Publicar imagenes
+      ansible.builtin.command: >
+        docker push {{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
+    
+    - name: Obtener task definition actual
+      ansible.builtin.command: >
+        aws ecs describe-task-definition
+        --task-definition {{ task_definition_arn }}
+        --query taskDefinition
+      register:
+        td_out
+    
+    - name: Obtener JSON del task taskDefinition
+      set_fact:
+        td_config: "{{ (td_out.stdout | from_json) }}"
+        new_image_arn: "{{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}"
+        
+    - name: Escribir nueva revisión del task definition
+      ansible.builtin.copy:
+        dest: "{{ msrvc_root }}/srvc_task_definition.json"
+        content: >-
+          {{ td_config | combine({
+              "containerDefinitions": (td_config.containerDefinitions | map('combine', { 'image': new_image_arn }))
+            }, recursive=false) | dict2items | rejectattr('key', 'in', [
+              'taskDefinitionArn',
+              'revision',
+              'status',
+              'requiresAttributes',
+              'registeredAt',
+              'registeredBy',
+              'compatibilities'
+            ]) | items2dict | to_nice_json
+          }}
+    
+    - name: Registrar nueva revisión del task definition
+      ansible.builtin.command: >
+        aws ecs register-task-definition
+        --cli-input-json file://{{ msrvc_root }}/srvc_task_definition.json
+        --region {{ repo_region }}
+      register:
+        new_registered_td
+        
+    - name: Extraer ARN de la nueva revisión
+      ansible.builtin.set_fact:
+        new_td_arn: "{{ (new_registered_td.stdout | from_json).taskDefinition.taskDefinitionArn }}"
+        
+    - name: Actualizar servicios
+      ansible.builtin.command: >
+        aws ecs update-service
+        --cluster {{ cluster_name }}
+        --service {{ msrvc_name }}-srvc
+        --task-definition {{ new_td_arn }}
+        --force-new-deployment
+        --region {{ repo_region }}
+    
+    - name: Limpiar archivos temporales
+      ansible.builtin.file:
+        path: "{{ msrvc_root }}/srvc_task_definition.json"
+        state: absent
