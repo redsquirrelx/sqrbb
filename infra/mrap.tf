@@ -20,7 +20,7 @@ resource "aws_s3control_multi_region_access_point" "staticpage" {
         dynamic "region" {
             for_each = module.bucket_staticweb
             content {
-                bucket = region.value.bucket_id
+                bucket = region.value.bucket
             }
         }
     }
