@@ -81,17 +81,6 @@ module "api-gateway" {
     }
 }
 
-module "frontend" {
-    source = "./modules/frontend"
-    
-    providers = {
-        aws.ue1 = aws.ue1
-        aws.ue2 = aws.ue2
-        aws.se1 = aws.se1
-        aws.ew1 = aws.ew1
-    }
-}
-
 module "lambda" {
     source = "./modules/lambda"
 
