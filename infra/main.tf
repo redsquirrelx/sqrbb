@@ -74,6 +74,7 @@ module "api-gateway" {
     acm_cert_arn = aws_acm_certificate.api["us-east-2"].arn
     hosted_zone_zone_id = aws_route53_zone.this.zone_id
     domain_name = var.domain_name
+    log_group_arn = module.apigateway_loggroup.log_group_arn
     
     providers = {
         aws = aws.ue2
