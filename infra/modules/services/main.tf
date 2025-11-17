@@ -108,6 +108,7 @@ resource "aws_ecs_task_definition" "this" {
                     hostPort      = 80
                 }
             ]
+            readonlyRootFilesystem = true
         }
     ])
 }
