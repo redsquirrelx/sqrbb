@@ -27,6 +27,7 @@ resource "aws_lb_target_group" "propiedades" {
 }
 
 resource "aws_lb_target_group" "reservas" {
+# checkov:skip=CKV_AWS_378:no manejamos cifrado interno
     vpc_id      = var.vpc-id
     name        = "reservas-tg"
     port        = 80
