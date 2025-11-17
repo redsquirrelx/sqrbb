@@ -47,6 +47,58 @@ resource "aws_iam_role" "ecs_task_execution" {
    })
 }
 
+resource "aws_iam_role" "ecs_task_role" {
+   name = "ecs_task_role"
+   assume_role_policy = jsonencode({
+       Version = "2012-10-17"
+       Statement = [
+           {
+               Action = "sts:AssumeRole"
+               Effect = "Allow"
+               Sid    = "AllowECSTasksToAssumeRole"
+               Principal = {
+                   Service = "ecs-tasks.amazonaws.com"
+               }
+           },
+       ]
+   })
+}
+
+resource "aws_iam_role_policy_attachment" "dynamodb" {
+    policy_arn = aws_iam_policy.dynamodb_policy.arn
+    role = aws_iam_role.ecs_task_role.name
+}
+
+data "aws_iam_policy_document" "dynamodb_access_policy"{
+    statement {
+        sid = "AllowFargateDynamoDBAccess"
+        effect = "Allow"
+
+        # Acciones de un microservicio CRUD
+        actions = [
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:Query", #Para consultar usando la llave primaria
+            "dynamodb:Scan" # Escanear toda la tabla (COstoso)
+        ]
+
+        # Recurso sobre el cual se aplica estas acciones
+        # Aca se coloca los ARNs
+        resources = [ "*" ]
+    }
+}
+
+resource "aws_iam_policy" "dynamodb_policy" {
+    name = "dynamodb_access_policy" # NOmbre de la politica
+    description = "Politicas para acceso a las tablas de DynamoDB"
+
+    # Aca se asigna el JSON que se genero con data source
+    policy = data.aws_iam_policy_document.dynamodb_access_policy.json
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
     role       = aws_iam_role.ecs_task_execution.name
     policy_arn = aws_iam_policy.ecs_task_execution.arn
@@ -64,6 +116,7 @@ resource "aws_ecs_task_definition" "this" {
         cpu_architecture = "X86_64"
     }
 
+    task_role_arn = aws_iam_role.ecs_task_role.arn
     execution_role_arn = aws_iam_role.ecs_task_execution.arn
     network_mode = "awsvpc"
     container_definitions = jsonencode([
