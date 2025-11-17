@@ -109,6 +109,7 @@ module "cloudfront" {
     source = "./modules/cloudfront"
     mrap = module.frontend.mrap
     sigv4a-lmbd-fn = module.lambda.lambda-fn-sigv4a
+    access_logs_bucket_domain_name = module.bucket_access_logs["us-east-1"].bucket_domain_name
 }
 
 data "aws_caller_identity" "current" { }
