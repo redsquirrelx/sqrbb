@@ -21,7 +21,10 @@ pipeline {
             steps {
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
                     sh 'terraform -chdir=infra/ init'
-                    sh 'terraform -chdir=infra/ plan'
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        terraform -chdir=infra/ plan
+                    """
                 }
             }
         }
