@@ -45,7 +45,7 @@ pipeline {
 
         stage('Destruir') {
             steps {
-                input message: "Destruir?" ok: "yes"
+                input message: "Destruir?", ok: "yes"
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
                     sh """
                         terraform -chdir=infra/ destroy -auto-approve
