@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            checkout scm
+        }
+
+        stage('Plan') {
+            withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                sh 'terraform -chdir=infra/ init'
+                sh 'terraform -chdir=infra/ plan'
+            }
+        }
+    }
+}
