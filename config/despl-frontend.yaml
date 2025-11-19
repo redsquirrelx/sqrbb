@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     project_root: "{{ playbook_dir }}/.."
-    cloudfront_dist_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cloudfront-dist-id') }}"
+    cloudfront_dist_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).cloudfront_dist_id }}"
 
   tasks:
     - name: subir archivos frontend
