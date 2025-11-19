@@ -19,6 +19,9 @@ pipeline {
 
         stage('Validar') {
             // Con checkov
+            steps {
+                echo 'Validando...'
+            }
         }
 
         stage('Inicializar terraform') {
