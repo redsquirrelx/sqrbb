@@ -11,7 +11,7 @@ pipeline {
         stage('Clone') {
             steps {
                 checkout scm
-                sh 'echo domain_name = "$DOMAIN_NAME" > infra/terraform.tfvars'
+                sh 'echo domain_name = \"$DOMAIN_NAME\" > infra/terraform.tfvars'
             }
         }
 
