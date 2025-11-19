@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     project_root: "{{ playbook_dir }}/.."
-    cloudfront_dist_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).cloudfront_dist_id }}"
+    cloudfront_dist_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).cloudfront_dist_id.value }}"
 
   tasks:
     - name: subir archivos frontend

@@ -4,9 +4,9 @@
   gather_facts: false
   vars:
     project_root: "{{ playbook_dir }}/.."
-    cloudfront_dist_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).cloudfront_dist_id }}"
-    lambda_function_name: "{{ (lookup('file', '../tf-outputs.json') | from_json).lmbd_fn_sigv4a_arn }}"
-    lambda_signer_name: "{{ (lookup('file', '../tf-outputs.json') | from_json).sigv4a_signer_name }}"
+    cloudfront_dist_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).cloudfront_dist_id.value }}"
+    lambda_function_name: "{{ (lookup('file', '../tf-outputs.json') | from_json).lmbd_fn_sigv4a_arn.value }}"
+    lambda_signer_name: "{{ (lookup('file', '../tf-outputs.json') | from_json).sigv4a_signer_name.value }}"
     
     lambda_fn_root: "{{ project_root }}/lambdas/sigv4a"
 
