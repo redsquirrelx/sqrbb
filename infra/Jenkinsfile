@@ -42,7 +42,7 @@ pipeline {
                     """
                 }
 
-                archiveArtifacts artifacts: "infra/tf-outputs.json", fingerprint: true
+                archiveArtifacts artifacts: "tf-outputs.json", fingerprint: true
             }
         }
     }
