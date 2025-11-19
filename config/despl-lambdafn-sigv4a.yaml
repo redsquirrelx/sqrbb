@@ -12,7 +12,7 @@
 
   tasks:
     - name: descargar dependencias
-      command: npm i {{ lambda_fn_root }}
+      command: chdir={{ lambda_fn_root }} npm i
     
     - name: empaquetar
       command: >
