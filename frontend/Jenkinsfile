@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clonar') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Obtener output del provisionamiento') {
+            steps {
+                copyArtifacts(
+                    projectName: 'provisionamiento',
+                    selector: lastSuccessful(),
+                    filter: 'tf-outputs.json'
+                )
+            }
+        }
+    }
+}
