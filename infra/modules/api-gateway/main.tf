@@ -72,6 +72,8 @@ resource "aws_apigatewayv2_domain_name" "this" {
         endpoint_type   = "REGIONAL"
         security_policy = "TLS_1_2"
     }
+
+    depends_on = [ var.acm_cert ]
 }
 
 resource "aws_apigatewayv2_api_mapping" "api" {

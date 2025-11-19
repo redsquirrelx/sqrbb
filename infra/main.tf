@@ -68,6 +68,7 @@ module "api-gateway" {
     alb-subnets = module.vpc-us-east-2.alb-subnets
     alb-listener = module.alb.listener
     acm_cert_arn = aws_acm_certificate.api["us-east-2"].arn
+    acm_cert = aws_acm_certificate.api["us-east-2"]
     hosted_zone_zone_id = aws_route53_zone.this.zone_id
     domain_name = var.domain_name
     log_group_arn = module.apigateway_loggroup.log_group_arn
