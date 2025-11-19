@@ -1,10 +1,17 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: "DOMAIN_NAME"
+        )
+    }
+
     stages {
         stage('Clone') {
             steps {
                 checkout scm
+                echo 'echo domain_name = "$DOMAIN_NAME" > infra/terraform.tfvars'
             }
         }
 
