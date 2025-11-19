@@ -20,7 +20,12 @@ pipeline {
 
         stage('Desplegar dist') {
             steps {
-                sh 'ansible-playbook -i config/inventory.ini config/despl-frontend.yaml'
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
+                    """
+                }
             }
         }
     }
