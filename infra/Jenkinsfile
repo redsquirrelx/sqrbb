@@ -38,8 +38,11 @@ pipeline {
                     sh """
                         export AWS_REGION="us-east-2"
                         terraform -chdir=infra/ apply -auto-approve
+                        terraform -chdir=infra/ output -json > tf-outputs.json
                     """
                 }
+
+                archiveArtifacts artifacts: "infra/tf-outputs.json", fingerprint: true
             }
         }
     }
