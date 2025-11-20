@@ -8,7 +8,7 @@ variable "hosted_zone_zone_id" {}
 
 variable "acm_cert_arn" {}
 
-variable "acm_cert" {}
+variable "acm_cert_val" {}
 
 variable "domain_name" {}
 

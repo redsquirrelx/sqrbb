@@ -73,7 +73,7 @@ resource "aws_apigatewayv2_domain_name" "this" {
         security_policy = "TLS_1_2"
     }
 
-    depends_on = [ var.acm_cert ]
+    depends_on = [ var.acm_cert_val ]
 }
 
 resource "aws_apigatewayv2_api_mapping" "api" {
