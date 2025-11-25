@@ -24,6 +24,8 @@ resource "aws_lb_target_group" "propiedades" {
         timeout = 5
         matcher = "200"
     }
+
+    depends_on = [ aws_lb_listener_rule.propiedades ]
 }
 
 resource "aws_lb_target_group" "reservas" {
@@ -44,6 +46,8 @@ resource "aws_lb_target_group" "reservas" {
         timeout = 5
         matcher = "200"
     }
+    
+    depends_on = [ aws_lb_listener_rule.reservas ]
 }
 
 resource "aws_lb" "this" {
