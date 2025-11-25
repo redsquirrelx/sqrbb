@@ -19,20 +19,28 @@ x-ec2_anchor: &ec2_anchor
   tenancy: Default
   useEphemeralDevices: false
   zone: "us-east-2"
-  ami: "ami-025ca978d4c1d9825"
+  ami: "ami-0f5fcdfbd140e4ab7"
   securityGroups: "ec2_agent_sg"
-  remoteFS: "/home/ec2-user"
-  remoteAdmin: "ec2-user"
+  remoteFS: "/home/ubuntu"
+  remoteAdmin: "ubuntu"
   mode: "NORMAL"
   amiType:
     unixData:
       sshPort: "22"
   initScript: |
-    sudo dnf install -y java-21-amazon-corretto
+    sudo apt update -y
+    sudo apt upgrade -y
+    sudo apt install openjdk-21-jdk -y
     export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
     export PATH=$JAVA_HOME/bin:$PATH
-    echo "Java version:"
     java -version
+    sudo apt-get update
+    sudo apt-get install -y gnupg software-properties-common
+    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+    gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+    sudo apt update
+    sudo apt-get install terraform=1.13.1-1 -y -y
 
 jenkins:
   systemMessage: "Configuración inicial"
