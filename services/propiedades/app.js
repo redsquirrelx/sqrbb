@@ -9,6 +9,8 @@ const task_identifier = randomUUID()
 const client = new DynamoDBClient({ region: "us-east-2" })
 const dbClient = DynamoDBDocumentClient.from(client)
 
+const { validarCamposRegistroPropiedad, validarPropiedad } = require('./utilidades')
+
 app.use(express.json())
 
 app.get('/propiedades', (req, res) => {
@@ -19,11 +21,19 @@ app.get('/propiedades', (req, res) => {
 })
 
 app.post('/propiedades', (req, res) => {
-    if (!req.body.type || !req.body.state || !req.body.dir || !req.body.owner) {
+    if (!validarCamposRegistroPropiedad(req.body)) {
         res.status(400)
         return res.json({
             task_identifier,
-            msg: "bad request"
+            msg: "bad request: faltan campos obligatorios"
+        })
+    }
+
+    if (!validarPropiedad(req.body)) {
+        res.status(400)
+        return res.json({
+            task_identifier,
+            msg: "bad request: nro. de huespedes invalido"
         })
     }
 
