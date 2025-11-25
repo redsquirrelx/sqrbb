@@ -25,7 +25,7 @@ resource "aws_lb_target_group" "propiedades" {
         matcher = "200"
     }
 
-    depends_on = [ aws_lb_listener_rule.propiedades ]
+    depends_on = [ aws_lb_listener.this ]
 }
 
 resource "aws_lb_target_group" "reservas" {
@@ -47,7 +47,7 @@ resource "aws_lb_target_group" "reservas" {
         matcher = "200"
     }
     
-    depends_on = [ aws_lb_listener_rule.reservas ]
+    depends_on = [ aws_lb_listener.this ]
 }
 
 resource "aws_lb" "this" {
