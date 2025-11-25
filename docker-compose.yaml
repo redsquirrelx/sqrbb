@@ -5,6 +5,16 @@ services:
     jenkins:
         image: jenkins
         build: ./
+        environment:
+            - DOMAIN_NAME=${DOMAIN_NAME}
+            - REPOSITORY_URL=${REPOSITORY_URL}
+            - JENKINS_USER=${JENKINS_USER}
+            - JENKINS_PASSWORD=${JENKINS_PASSWORD}
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECREY_KEY_ACCESS=${AWS_SECREY_KEY_ACCESS}
+            - AWS_REGION=${AWS_REGION}
+            - EC2_KEY=${EC2_KEY}
+            - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
         ports:
         - 8080:8080
         - 50000:50000
@@ -13,6 +23,7 @@ services:
         volumes:
         - jenkins_home:/var/jenkins_home
         - /var/run/docker.sock:/var/run/docker.sock
+        - ./jcasc:/var/jenkins_home/casc_configs:ro
 
 networks:
     jenkins_network: {}

@@ -1,0 +1,114 @@
+x-ec2_anchor: &ec2_anchor
+  associateIPStrategy: PUBLIC_IP
+  connectBySSHProcess: false
+  connectionStrategy: PUBLIC_IP
+  deleteRootOnTermination: false
+  ebsOptimized: false
+  idleTerminationMinutes: "5"
+  maxTotalUses: -1
+  monitoring: false
+  nodeProperties:
+    - diskSpaceMonitor:
+        freeDiskSpaceThreshold: 0
+        freeDiskSpaceWarningThreshold: 0
+        freeTempSpaceThreshold: 0
+        freeTempSpaceWarningThreshold: 0
+  hostKeyVerificationStrategy: CHECK_NEW_HARD
+  numExecutors: 1
+  stopOnTerminate: false
+  tenancy: Default
+  useEphemeralDevices: false
+  zone: "us-east-2"
+  ami: "ami-025ca978d4c1d9825"
+  securityGroups: "ec2_agent_sg"
+  remoteFS: "/home/ec2-user"
+  remoteAdmin: "ec2-user"
+  mode: "NORMAL"
+  amiType:
+    unixData:
+      sshPort: "22"
+  initScript: |
+    sudo dnf install -y java-21-amazon-corretto
+    export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+    export PATH=$JAVA_HOME/bin:$PATH
+    echo "Java version:"
+    java -version
+
+jenkins:
+  systemMessage: "Configuración inicial"
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "DOMAIN_NAME"
+        value: ${DOMAIN_NAME}
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_USER}
+          password: ${JENKINS_PASSWORD}
+  clouds:
+    - amazonEC2:
+        name: "ec2"
+        instanceCapStr: 2
+        credentialsId: "my_aws_credential"
+        sshKeysCredentialsId: "ec2_agent_key"
+        noDelayProvisioning: true
+        region: "us-east-2"
+        templates:
+          - description: "Micro EC2"
+            type: "t3.micro"
+            labelString: "ec2-t3-micro"
+            <<: *ec2_anchor
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - aws:
+            scope: GLOBAL
+            id: "my_aws_credential"
+            description: "Especificar credenciales para AWS"
+            accessKey: ${AWS_ACCESS_KEY_ID}
+            secretKey: ${AWS_SECREY_KEY_ACCESS}
+        - basicSSHUserPrivateKey:
+            scope: GLOBAL
+            id: "ec2_agent_key"
+            username: "ec2-user"
+            privateKeySource:
+              directEntry:
+                privateKey: ${EC2_KEY}
+
+jobs:
+  - script: >
+      pipelineJob('provisionamiento') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('infra/Jenkinsfile')
+          }
+        }
+      }
+
+      pipelineJob('frontend') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('frontend/Jenkinsfile')
+          }
+        }
+      }
