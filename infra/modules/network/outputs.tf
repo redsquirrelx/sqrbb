@@ -25,3 +25,7 @@ output "alb-subnets" {
 output "service-subnets" {
     value = aws_subnet.service-subnets
 }
+
+output "lambda_subnets" {
+    value = aws_subnet.lambda_subnets
+}
