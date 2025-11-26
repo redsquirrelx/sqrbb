@@ -63,7 +63,35 @@ data "aws_iam_policy_document" "dynamodb_access_policy"{
 
         # Recurso sobre el cual se aplica estas acciones
         # Aca se coloca los ARNs
-        resources = [ "*" ]
+        resources = [ 
+            var.propiedades_db_arn,
+            var.reservas_db_arn
+        ]
+    }
+
+    statement {
+        sid = "AllowFargateSNSAccess"
+        effect = "Allow"
+        
+        actions = [
+            "sns:Publish"
+        ]
+
+        resources = [ var.reservas_proc_topic_arn ]
+    }
+
+    statement {
+        sid = "AllowFargateKMSAccess"
+        effect = "Allow"
+        
+        actions = [
+            "kms:GenerateDataKey",
+            "kms:Decrypt"
+        ]
+
+        resources = [
+            var.kms_arn
+        ]
     }
 }
 
