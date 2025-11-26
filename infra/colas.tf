@@ -5,7 +5,7 @@ resource "aws_sns_topic" "reserva_proc" {
 
 resource "aws_sqs_queue" "error" {
     name                      = "error_sqs"
-    kms_master_key_id = aws_kms_key.kms["us-east-2"].id
+    sqs_managed_sse_enabled = true
 }
 
 module "stats_sqs" {
@@ -15,7 +15,6 @@ module "stats_sqs" {
     sns_topic_arn = aws_sns_topic.reserva_proc.arn
     name = "stats_sqs"
     dlq_arn = aws_sqs_queue.error.arn
-    kms_id = aws_kms_key.kms["us-east-2"].id
 }
 
 module "reserva_mail_sqs" {
@@ -25,7 +24,6 @@ module "reserva_mail_sqs" {
     sns_topic_arn = aws_sns_topic.reserva_proc.arn
     name = "reserva_mail_sqs"
     dlq_arn = aws_sqs_queue.error.arn
-    kms_id = aws_kms_key.kms["us-east-2"].id
 }
 
 resource "aws_sqs_queue_redrive_allow_policy" "terraform_queue_redrive_allow_policy" {

@@ -10,7 +10,7 @@ resource "aws_sqs_queue" "this" {
         maxReceiveCount     = 4
     })
 
-    kms_master_key_id = var.kms_id
+    sqs_managed_sse_enabled = true
 }
 
 data "aws_iam_policy_document" "this" {
