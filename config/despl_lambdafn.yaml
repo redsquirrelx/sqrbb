@@ -1,0 +1,75 @@
+# Vars:
+# - lambda_name
+# - region
+
+- name: Desplegar lambda
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+    lambda_fn_root: "{{ project_root }}/lambdas/{{lambda_name}}"
+
+    lambda_function_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_' ~ lambda_name ~ '_' ~ region ~ '_arn'].value }}"
+    lambda_signer_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['signer_' ~ lambda_name ~ '_' ~ region ~ '_arn'].value }}"
+    lambda_bucket: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_bucket_' ~ region].value }}"
+    
+  tasks:
+    - name: descargar dependencias
+      command: chdir={{ lambda_fn_root }} npm i
+    
+    - name: empaquetar
+      command: >
+        chdir={{ lambda_fn_root }} 
+        zip -r function.zip 
+        .
+    
+    - name: Subir archivo a un bucket
+      ansible.builtin.command: >
+        aws s3 cp
+        {{ lambda_fn_root }}/function.zip
+        s3://{{ lambda_bucket }}/lambda/{{ lambda_name }}/func.zip
+        --region {{ region }}
+    
+    - name: Obtener última versión
+      ansible.builtin.command: >
+        aws s3api list-object-versions
+        --bucket {{ lambda_bucket }}
+        --prefix lambda/{{ lambda_name }}/func.zip
+        --region {{ region }}
+      register: bucket_versions
+
+    - name: Firmar función
+      ansible.builtin.command: >
+        aws signer start-signing-job
+        --source s3={bucketName={{ lambda_bucket }},key=lambda/{{ lambda_name }}/func.zip,version={{ (bucket_versions.stdout | from_json).Versions[0].VersionId }}}
+        --destination s3={bucketName={{ lambda_bucket }},prefix=lambda/{{ lambda_name }}/signed-}
+        --profile-name {{ lambda_signer_name }}
+        --region {{ region }}
+      register: sign_result
+
+    - name: actualizar función lambda
+      command: > 
+        aws lambda update-function-code 
+        --function-name {{ lambda_function_name }}
+        --s3-bucket {{ lambda_bucket }}
+        --s3-key lambda/{{ lambda_name }}/signed-{{ (sign_result.stdout | from_json).jobId }}.zip
+        --region {{ region }}
+
+    - name: publicar nueva versión lambda
+      retries: 5
+      delay: 5
+      register: publish_version
+      until: >
+        (publish_version.stdout != "" and
+        ("LastUpdateStatus" in (publish_version.stdout | from_json) and
+        (publish_version.stdout | from_json).LastUpdateStatus == "Successful"))
+      command: >
+        aws lambda publish-version 
+        --function-name {{lambda_function_name}} 
+        --region {{ region }}
+        
+    - name: limpiar empaquetado
+      ansible.builtin.file:
+        path: "{{ lambda_fn_root }}/function.zip"
+        state: absent
