@@ -138,8 +138,8 @@ resource "aws_lb_listener_rule" "reservas" {
     condition {
         path_pattern {
             values = [
-                "/propiedades",
-                "/propiedades/*"
+                "/reservas",
+                "/reservas/*"
             ]
         }
     }
