@@ -56,6 +56,11 @@ module "services" {
 
     microservices_definition = local.microservices
 
+    propiedades_db_arn = aws_dynamodb_table.propiedades.arn
+    reservas_db_arn = aws_dynamodb_table.reservas.arn
+    reservas_proc_topic_arn = aws_sns_topic.reserva_proc.arn
+    kms_arn = aws_kms_key.kms["us-east-2"].arn
+
     providers = {
         aws = aws.ue2
     }
