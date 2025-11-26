@@ -15,12 +15,19 @@ resource "aws_sqs_queue" "this" {
 
 data "aws_iam_policy_document" "this" {
     statement {
+        sid = "__owner_statement"
+        effect = "Allow"
+        actions = [ "SQS:*" ]
+        resources = [ aws_sqs_queue.this.arn ]
+    }
+
+    statement {
         sid    = "${var.name}_sns"
         effect = "Allow"
 
         principals {
-            type        = "Service"
-            identifiers = ["sns.amazonaws.com"]
+          type = "Service"
+          identifiers = [ "sns.amazonaws.com" ]
         }
 
         actions = [
@@ -28,7 +35,7 @@ data "aws_iam_policy_document" "this" {
         ]
 
         resources = [
-            aws_sqs_queue.this.arn,
+            aws_sqs_queue.this.arn
         ]
 
         condition {
