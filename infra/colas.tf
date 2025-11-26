@@ -1,6 +1,7 @@
 resource "aws_sns_topic" "reserva_proc" {
     name = "reserva_proc_topic"
-    kms_master_key_id = aws_kms_key.kms["us-east-2"].id
+    # AWS Managed
+    kms_master_key_id = "alias/aws/sns"
 }
 
 resource "aws_sqs_queue" "error" {
