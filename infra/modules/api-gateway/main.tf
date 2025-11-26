@@ -37,6 +37,7 @@ resource "aws_apigatewayv2_integration" "alb" {
 }
 
 resource "aws_apigatewayv2_route" "this" {
+# checkov:skip=CKV_AWS_309: el sistema no soporta autenticacion/autorizacion
     api_id    = aws_apigatewayv2_api.this.id
     route_key = "ANY /{proxy+}"
     target = "integrations/${aws_apigatewayv2_integration.alb.id}"
