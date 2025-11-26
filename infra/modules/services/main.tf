@@ -137,6 +137,16 @@ resource "aws_ecs_task_definition" "this" {
                 }
             ]
             readonlyRootFilesystem = true
+            environment = [
+                {
+                    name = "RESERVAS_PROC_SNS_TOPIC_ARN",
+                    value = var.reservas_proc_topic_arn
+                },
+                {
+                    name = "SERVICE_REGION",
+                    value = "us-east-2"
+                }
+            ]
         }
     ])
 }
