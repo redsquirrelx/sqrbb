@@ -79,7 +79,18 @@ resource "aws_kms_key" "kms" {
                 ],
                 Resource = "*"
             },
-
+            {
+              Sid    = "Allow SNS publish"
+              Effect = "Allow"
+              Principal = {
+                Service = "sns.amazonaws.com"
+              }
+              Action = [
+                "kms:Decrypt",
+                "kms:GenerateDataKey"
+              ]
+              Resource = "*"
+            }
         ]
     })
 }
