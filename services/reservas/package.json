@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.940.0",
+    "email-validator": "^2.0.4",
     "express": "^5.1.0"
   }
 }

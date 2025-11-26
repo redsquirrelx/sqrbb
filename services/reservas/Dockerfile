@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY ./app.js .
 
+COPY ./utilidades.js .
+
 COPY ./package.json .
 
 RUN npm install
