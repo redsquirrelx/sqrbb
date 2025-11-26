@@ -1,10 +1,10 @@
 resource "aws_sqs_queue" "this" {
     region                    = var.region
     name                      = var.name
-    delay_seconds             = 90
-    max_message_size          = 2048
+    delay_seconds             = 0
+    max_message_size          = 20480
     message_retention_seconds = 86400
-    receive_wait_time_seconds = 10
+    receive_wait_time_seconds = 0
     redrive_policy = jsonencode({
         deadLetterTargetArn = var.dlq_arn
         maxReceiveCount     = 4
