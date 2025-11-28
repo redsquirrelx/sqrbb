@@ -76,3 +76,20 @@ resource "aws_vpc_endpoint" "dynamodb" {
     vpc_endpoint_type = "Gateway"
     route_table_ids   = [ aws_route_table.service.id, aws_route_table.lambda.id ]
 }
+
+# ENDPOINTS RULES
+resource "aws_vpc_security_group_ingress_rule" "endpoints_a_lambda_enviar_correo" {
+    security_group_id = aws_security_group.endpoints.id
+    referenced_security_group_id = var.enviar_correo_sg_id
+    ip_protocol                  = "-1"
+
+    description = "Permitir ingreso del SG de lambda enviar_correo"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "endpoints_a_lambda_actualizar_estadistica" {
+    security_group_id = aws_security_group.endpoints.id
+    referenced_security_group_id = var.actualizar_estadisticas_sg_id
+    ip_protocol                  = "-1"
+
+    description = "Permitir ingreso del SG de lambda actualizar_estadisticas"
+}
