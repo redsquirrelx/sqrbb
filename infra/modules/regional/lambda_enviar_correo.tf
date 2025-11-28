@@ -115,7 +115,7 @@ module "enviar_correo" {
     iam_role_arn = aws_iam_role.lambda_enviar_correo.arn
     env_variables = {
         REGION = var.region
-        SES_SENDER_EMAIL = "support@${var.ses_domain_mail_domain}"
+        SES_SENDER_EMAIL = "support@${aws_ses_domain_mail_from.this.domain}"
     }
 }
 

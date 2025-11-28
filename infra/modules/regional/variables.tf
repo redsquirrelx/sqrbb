@@ -12,6 +12,8 @@ variable "lambda_bucket_id" {}
 
 variable "dynamodb_propiedades_arn" {}
 
-variable "ses_domain_mail_domain" {}
-
 variable "account_id" {}
+
+variable "domain_name" {}
+
+variable "route_53_zone_zone_id" {}
