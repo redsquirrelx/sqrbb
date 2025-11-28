@@ -2,6 +2,8 @@ module "vpc-us-east-2" {
     source = "./modules/network"
 
     flow_log_group_arn = module.vpc_loggroup.log_group_arn
+    actualizar_estadisticas_sg_id = module.regional_us_east_2.actualizar_estadisticas_sg_id
+    enviar_correo_sg_id = module.regional_us_east_2.enviar_correo_sg_id
 
     providers = {
         aws = aws.ue2
