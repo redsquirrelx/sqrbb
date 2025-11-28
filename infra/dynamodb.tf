@@ -9,19 +9,10 @@ resource "aws_dynamodb_table" "propiedades" {
     #Configuracion de la llave primaria
     hash_key = "PropiedadID"  # Se puede cambiar por una mas segura
 
-    # Llave de ordenamiento
-    range_key = "FechaRegistro"
-
     # Se define el atributo de la llave primaria
     attribute {
         name = "PropiedadID"
         type = "S"  # S: String
-    }
-
-    # Se define la llave de ordenamiento
-    attribute {
-        name = "FechaRegistro"
-        type = "N"
     }
 
     ttl {
