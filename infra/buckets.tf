@@ -78,3 +78,14 @@ module "bucket_lambda_us_east_2" {
     replicate                 = false
     enable_event_notifs       = false
 }
+
+module "bucket_lambda_eu_west_1" {
+    source = "./modules/s3bucket"
+    bucket_name = "redsqx-eu-west-1-lambda"
+    region      = "eu-west-1"
+    
+    enable_access_logs        = true
+    bucket_access_logs_bucket = module.bucket_access_logs["eu-west-1"].bucket
+    replicate                 = false
+    enable_event_notifs       = false
+}
