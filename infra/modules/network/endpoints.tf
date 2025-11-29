@@ -79,6 +79,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 
 # ENDPOINTS RULES
 resource "aws_vpc_security_group_ingress_rule" "endpoints_a_lambda_enviar_correo" {
+    count = var.enviar_correo_sg_id != null ? 1 : 0
     security_group_id = aws_security_group.endpoints.id
     referenced_security_group_id = var.enviar_correo_sg_id
     ip_protocol                  = "-1"
@@ -87,6 +88,7 @@ resource "aws_vpc_security_group_ingress_rule" "endpoints_a_lambda_enviar_correo
 }
 
 resource "aws_vpc_security_group_ingress_rule" "endpoints_a_lambda_actualizar_estadistica" {
+    count = var.actualizar_estadisticas_sg_id != null ? 1 : 0
     security_group_id = aws_security_group.endpoints.id
     referenced_security_group_id = var.actualizar_estadisticas_sg_id
     ip_protocol                  = "-1"
