@@ -75,8 +75,8 @@ RUN npm install -g npm@10.9.3
 RUN apt-get install zip
 
 # Plugins
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+COPY jenkins/plugins.txt /usr/share/jenkins/ref/plugins.txt
+COPY jenkins/install-plugins.sh /usr/local/bin/install-plugins.sh
 
 RUN chmod +x /usr/local/bin/install-plugins.sh
 RUN /usr/local/bin/install-plugins.sh /usr/share/jenkins/ref/plugins.txt
