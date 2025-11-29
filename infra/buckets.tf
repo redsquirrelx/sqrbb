@@ -36,7 +36,7 @@ resource "aws_s3_bucket_acl" "access_logs_us_east_1" {
     acl    = "private"
 }
 
-data "aws_iam_policy_document" "alb_access_logs" {
+data "aws_iam_policy_document" "alb_access_logs_us_east_2" {
     statement {
         sid = "PermitirALBAccessLog"
         effect = "Allow"
@@ -49,11 +49,33 @@ data "aws_iam_policy_document" "alb_access_logs" {
     }
 }
 
-resource "aws_s3_bucket_policy" "access_logs" {
+resource "aws_s3_bucket_policy" "access_logs_us_east_2" {
     region = "us-east-2"
     
     bucket = module.bucket_access_logs["us-east-2"].bucket
-    policy = data.aws_iam_policy_document.alb_access_logs.json
+    policy = data.aws_iam_policy_document.alb_access_logs_us_east_2.json
+}
+
+data "aws_iam_policy_document" "alb_access_logs_eu_west_1" {
+    statement {
+        sid = "PermitirALBAccessLog"
+        effect = "Allow"
+        principals {
+            type = "Service"
+            identifiers = [ "logdelivery.elasticloadbalancing.amazonaws.com" ]
+        }
+        actions = [ "s3:PutObject" ]
+        resources = [
+            "${module.bucket_access_logs["eu-west-1"].bucket_arn}/AWSLogs/*"
+        ]
+    }
+}
+
+resource "aws_s3_bucket_policy" "access_logs_eu_west_1" {
+    region = "eu-west-1"
+    
+    bucket = module.bucket_access_logs["eu-west-1"].bucket
+    policy = data.aws_iam_policy_document.alb_access_logs_eu_west_1.json
 }
 
 # Lambdas
