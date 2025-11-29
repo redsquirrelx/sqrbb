@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "vpc_assume_role" {
 }
 
 resource "aws_iam_role" "vpc" {
-    name               = "vpc_role"
+    name               = "vpc_role_${var.region}"
     assume_role_policy = data.aws_iam_policy_document.vpc_assume_role.json
 }
 
