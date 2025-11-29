@@ -4,6 +4,10 @@ pipeline {
             filename 'jenkins/agents/Dockerfile.despl'
         }
     }
+    
+    options {
+        ansiColor('xterm')
+    }
 
     parameters {
         choice(
