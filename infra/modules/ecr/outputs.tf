@@ -1,7 +1,7 @@
-output "msrvc-propiedades-repository" {
+output "propiedades_repository" {
     value = aws_ecr_repository.msrvc-propiedades
 }
 
-output "msrvc-reservas-repository" {
+output "reservas_repository" {
     value = aws_ecr_repository.msrvc-reservas
 }
