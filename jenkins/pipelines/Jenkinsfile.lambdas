@@ -1,0 +1,62 @@
+pipeline {
+    agent {
+        dockerfile {
+            filename 'jenkins/agents/Dockerfile.despl'
+        }
+    }
+
+    parameters {
+        choice(
+            name: 'LAMBDA',
+            choices: [
+                'updateStats',
+                'sendEmail',
+            ],
+            description: 'Lambda'
+        )
+
+        choice(
+            name: 'REGION',
+            choices: [
+                'us-east-2',
+                'eu-west-1',
+            ],
+            description: 'Región'
+        )
+    }
+
+    stages {
+        stage('Clonar') {
+            steps {
+                script {
+                    currentBuild.displayName = "${LAMBDA} - ${REGION}"
+                }
+                checkout scm
+            }
+        }
+
+        stage('Obtener outputs del provisionamiento') {
+            steps {
+                copyArtifacts(
+                    projectName: 'provisionamiento',
+                    selector: lastSuccessful(),
+                    filter: 'tf-outputs.json'
+                )
+            }
+        }
+        
+        stage('Desplegar') {
+            steps {
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook 
+                        -i config/inventory.ini
+                        config/despl-lambdafn.yaml
+                        -e "lambda=${params.LAMBDA} region=${params.SERVICIO}"
+                    """
+                }
+            }
+        }
+    }
+}
