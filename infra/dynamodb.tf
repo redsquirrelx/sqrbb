@@ -28,6 +28,16 @@ resource "aws_dynamodb_table" "propiedades" {
         enabled = true
         kms_key_arn = null
     }
+    
+    replica {
+        region_name = "us-east-1"
+        consistency_mode = "EVENTUAL"
+    }
+    
+    replica {
+        region_name = "eu-west-1"
+        consistency_mode = "EVENTUAL"
+    }
 
     stream_enabled = true
     stream_view_type = "NEW_AND_OLD_IMAGES"
@@ -70,6 +80,16 @@ resource "aws_dynamodb_table" "reservas" {
     server_side_encryption {
         enabled = true
         kms_key_arn = null
+    }
+    
+    replica {
+        region_name = "us-east-1"
+        consistency_mode = "EVENTUAL"
+    }
+
+    replica {
+        region_name = "eu-west-1"
+        consistency_mode = "EVENTUAL"
     }
 
     stream_enabled = true
