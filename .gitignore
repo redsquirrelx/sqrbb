@@ -1,3 +1,5 @@
+results.xml/
+
 .terraform.lock.hcl
 node_modules/
 .vscode/
