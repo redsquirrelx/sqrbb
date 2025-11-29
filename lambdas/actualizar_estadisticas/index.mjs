@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb"
 
-const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: "us-east-2" }))
+const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION }))
 
 export const handler = async (event) => {
     for (const record of event.Records) {
