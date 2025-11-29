@@ -50,11 +50,13 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_sqs_queue_policy" "this" {
+    region = var.region
     queue_url = aws_sqs_queue.this.id
     policy = data.aws_iam_policy_document.this.json
 }
 
 resource "aws_sns_topic_subscription" "this" {
+    region = var.region
     topic_arn = var.sns_topic_arn
     protocol  = "sqs"
     endpoint  = aws_sqs_queue.this.arn
