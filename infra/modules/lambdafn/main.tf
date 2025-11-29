@@ -41,10 +41,13 @@ resource "aws_lambda_function" "this" {
 }
 
 resource "aws_signer_signing_profile" "this" {
+    region = var.region
     platform_id = "AWSLambda-SHA384-ECDSA"
 }
 
 resource "aws_lambda_code_signing_config" "this" {
+    region = var.region
+
     allowed_publishers {
         signing_profile_version_arns = [ aws_signer_signing_profile.this.version_arn ]
     }
@@ -55,6 +58,8 @@ resource "aws_lambda_code_signing_config" "this" {
 }
 
 resource "aws_s3_object" "dummy" {
+    region = var.region
+
     bucket = var.bucket_lambda_bucket
     key    = "lambda/${var.name}/func.zip"
     source = "${path.module}/dummy/function.zip"
@@ -69,12 +74,15 @@ resource "aws_s3_object" "dummy" {
 }
 
 data "aws_s3_object" "dummy" {
+    region = var.region
+
     bucket = var.bucket_lambda_bucket
     key = "lambda/${var.name}/func.zip"
     depends_on = [ aws_s3_object.dummy ]
 }
 
 resource "aws_signer_signing_job" "dummy" {
+    region = var.region
     profile_name = aws_signer_signing_profile.this.name
     source {
         s3 {
