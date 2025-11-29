@@ -7,23 +7,21 @@ pipeline {
 
     parameters {
         choice(
-            name: 'SERVICES',
+            name: 'SERVICIO',
             choices: [
                 'propiedades',
                 'reservas',
-                'ambos'
             ],
-            description: 'Servicio/s a desplegar'
+            description: 'Servicio'
         )
 
         choice(
-            name: 'REGIONS',
+            name: 'REGION',
             choices: [
                 'us-east-2',
                 'eu-west-1',
-                'ambos'
             ],
-            description: 'Región/es'
+            description: 'Región'
         )
     }
 
@@ -49,33 +47,17 @@ pipeline {
                 echo 'Testing...'
             }
         }
-
-        stage('Matriz de despliegue') {
-            matrix {
-                axes {
-                    axis {
-                        name 'SERV'
-                        values "${SERVICES}"
-                    }
-                    axis {
-                        name 'REG'
-                        values "${REGIONS}"
-                    }
-                }
-                stages {
-                    stage('Desplegar') {
-                        steps {
-                            withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
-                                sh """
-                                    export AWS_REGION="${REG}"
-                                    ansible-playbook 
-                                    -i config/inventory.ini
-                                    config/despl-servicios.yaml
-                                    -e "msrvc_name=${SERV} region=${REG}"
-                                """
-                            }
-                        }
-                    }
+        
+        stage('Desplegar') {
+            steps {
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook 
+                        -i config/inventory.ini
+                        config/despl-servicios.yaml
+                        -e "msrvc_name=${params.SERVICIO} region=${params.SERVICIO}"
+                    """
                 }
             }
         }
