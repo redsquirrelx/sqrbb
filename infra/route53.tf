@@ -61,3 +61,39 @@ resource "aws_route53domains_registered_domain" "this" {
     transfer_lock = true
     auto_renew    = false
 }
+
+resource "aws_route53_record" "api_us_east_2" {
+    zone_id = aws_route53_zone.this.zone_id
+    type = "A"
+    name = "api.${var.domain_name}"
+
+    alias {
+        name = module.api_gateway_us_east_2.target_domain_name
+        zone_id = module.api_gateway_us_east_2.hosted_zone_id
+        evaluate_target_health = true
+    }
+
+    latency_routing_policy {
+        region = "us-east-2"
+    }
+
+    set_identifier = "api_us_east_2"
+}
+
+resource "aws_route53_record" "api_eu_west_1" {
+    zone_id = aws_route53_zone.this.zone_id
+    type = "A"
+    name = "api.${var.domain_name}"
+
+    alias {
+        name = module.api_gateway_eu_west_1.target_domain_name
+        zone_id = module.api_gateway_eu_west_1.hosted_zone_id
+        evaluate_target_health = true
+    }
+
+    latency_routing_policy {
+        region = "eu-west-1"
+    }
+
+    set_identifier = "api_eu_west_1"
+}
