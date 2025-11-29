@@ -37,7 +37,7 @@ app.post('/reservas', (req, res) => {
     }
 
     const message = {
-        propiedadId: body.propiedadId,
+        propiedadId: req.body.propiedadId,
         timestamp: Date.now(),
         arrival: req.body.arrivaltime,
         email: req.body.email
