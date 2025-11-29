@@ -66,12 +66,12 @@ data "aws_iam_policy_document" "lambda_enviar_correo" {
 }
 
 resource "aws_iam_role" "lambda_enviar_correo" {
-    name               = "lambda_enviar_correo_role"
+    name               = "lambda_enviar_correo_role_${var.region}"
     assume_role_policy = data.aws_iam_policy_document.lambda_enviar_correo_assume_role.json
 }
 
 resource "aws_iam_policy" "lambda_enviar_correo" {
-    name = "lambda_enviar_correo_policy"
+    name = "lambda_enviar_correo_policy_${var.region}"
     policy = data.aws_iam_policy_document.lambda_enviar_correo.json
 }
 

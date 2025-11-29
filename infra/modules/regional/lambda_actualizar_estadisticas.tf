@@ -69,12 +69,12 @@ data "aws_iam_policy_document" "lambda_actualizar_estadisticas" {
 }
 
 resource "aws_iam_role" "lambda_actualizar_estadisticas" {
-    name               = "lambda_actualizar_estadisticas_role"
+    name               = "lambda_actualizar_estadisticas_role_${var.region}"
     assume_role_policy = data.aws_iam_policy_document.lambda_actualizar_estadisticas_assume_role.json
 }
 
 resource "aws_iam_policy" "lambda_actualizar_estadisticas" {
-    name = "lambda_actualizar_estadisticas_policy"
+    name = "lambda_actualizar_estadisticas_policy_${var.region}"
     policy = data.aws_iam_policy_document.lambda_actualizar_estadisticas.json
 }
 
