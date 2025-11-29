@@ -150,3 +150,82 @@ resource "aws_kms_key" "dnssec" {
     Version = "2012-10-17"
   })
 }
+
+
+# LAMDA
+resource "aws_iam_role" "kms_lambda" {
+    name = "KMS-Lambda"
+
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action = "sts:AssumeRole"
+                Effect = "Allow"
+                Principal = {
+                    Service = "cks.kms.amazonaws.com"
+                }
+            }
+        ]
+    })
+}
+
+resource "aws_kms_key" "lambda" {
+    for_each = local.all_regions
+    region = each.key
+    enable_key_rotation = true
+
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Id": "auto-awslambda",
+  "Statement": [
+    {
+      "Sid": "Allow administration of the key to the account root",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access through AWS Lambda for all principals in the account that are authorized to use AWS Lambda",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "912928332929",
+          "kms:ViaService": "lambda.us-east-2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::912928332929:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+    EOF
+}
