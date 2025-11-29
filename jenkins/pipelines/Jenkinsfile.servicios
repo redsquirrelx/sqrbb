@@ -28,6 +28,9 @@ pipeline {
     stages {
         stage('Clonar') {
             steps {
+                script {
+                    currentBuild.displayName = "${SERVICIO} - ${REGION}"
+                }
                 checkout scm
             }
         }
