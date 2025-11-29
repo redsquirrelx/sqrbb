@@ -72,3 +72,19 @@ jobs:
           }
         }
       }
+
+      pipelineJob('lambdas') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.lambdas')
+          }
+        }
+      }
