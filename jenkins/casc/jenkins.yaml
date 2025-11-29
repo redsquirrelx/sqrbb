@@ -36,7 +36,7 @@ jobs:
                 }
               }
             }
-            scriptPath('infra/Jenkinsfile')
+            scriptPath('jenkins/pipelines/Jenkinsfile.infra')
           }
         }
       }
@@ -52,7 +52,7 @@ jobs:
                 }
               }
             }
-            scriptPath('frontend/Jenkinsfile')
+            scriptPath('jenkins/pipelines/Jenkinsfile.frontend')
           }
         }
       }
