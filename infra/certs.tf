@@ -62,7 +62,7 @@ resource "aws_acm_certificate" "api" {
     depends_on = [ aws_acm_certificate_validation.us_east_1 ]
 }
 
-resource "aws_route53_record" "api_cert" {
+resource "aws_route53_record" "api_cert_us_east_2" {
     for_each = {
         for dvo in aws_acm_certificate.api["us-east-2"].domain_validation_options : dvo.domain_name => {
             name   = dvo.resource_record_name
@@ -96,16 +96,16 @@ resource "aws_route53_record" "api_cert_eu_west_1" {
     zone_id         = aws_route53_zone.this.zone_id
 }
 
-resource "aws_acm_certificate_validation" "api_cert_val" {
+resource "aws_acm_certificate_validation" "api_cert_val_us_east_2" {
     region = "us-east-2"
 
     certificate_arn         = aws_acm_certificate.api["us-east-2"].arn
-    validation_record_fqdns = [for record in aws_route53_record.api_cert : record.fqdn]
+    validation_record_fqdns = [for record in aws_route53_record.api_cert_us_east_2 : record.fqdn]
 }
 
 resource "aws_acm_certificate_validation" "api_cert_val_eu_west_1" {
     region = "eu-west-1"
 
     certificate_arn         = aws_acm_certificate.api["eu-west-1"].arn
-    validation_record_fqdns = [for record in aws_route53_record.api_cert : record.fqdn]
+    validation_record_fqdns = [for record in aws_route53_record.api_cert_eu_west_1 : record.fqdn]
 }

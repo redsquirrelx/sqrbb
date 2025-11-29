@@ -11,7 +11,8 @@ resource "aws_route53_key_signing_key" "this" {
 resource "aws_route53_hosted_zone_dnssec" "this" {
     depends_on = [
         aws_route53_key_signing_key.this,
-        aws_acm_certificate_validation.api_cert_val
+        aws_acm_certificate_validation.api_cert_val_us_east_2,
+        aws_acm_certificate_validation.api_cert_val_eu_west_1
     ]
     hosted_zone_id = aws_route53_key_signing_key.this.hosted_zone_id
 }
