@@ -1,0 +1,47 @@
+pipeline {
+    agent {
+        dockerfile {
+            filename 'jenkins/agents/Dockerfile.despl'
+        }
+    }
+
+    stages {
+        stage('Clonar') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Obtener output del provisionamiento') {
+            steps {
+                copyArtifacts(
+                    projectName: 'provisionamiento',
+                    selector: lastSuccessful(),
+                    filter: 'tf-outputs.json'
+                )
+            }
+        }
+        
+        stage('Desplegar sigv4a') {
+            steps {
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook -i config/inventory.ini config/despl-lambdafn-sigv4a.yaml
+                    """
+                }
+            }
+        }
+
+        stage('Desplegar dist') {
+            steps {
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
+                    """
+                }
+            }
+        }
+    }
+}
