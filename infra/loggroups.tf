@@ -5,6 +5,13 @@ module "vpc_loggroup" {
     kms_arn = aws_kms_key.kms["us-east-2"].arn
 }
 
+module "vpc_loggroup_eu_west_1" {
+    source = "./modules/cloudwatch_loggroup"
+    region = "eu-west-1"
+    name = "vpc-flow-logs"
+    kms_arn = aws_kms_key.kms["eu-west-1"].arn
+}
+
 module "route53_loggroup" {
     source = "./modules/cloudwatch_loggroup"
     region = "us-east-1"
