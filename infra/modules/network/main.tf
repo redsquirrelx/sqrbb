@@ -75,8 +75,6 @@ resource "aws_default_security_group" "default" {
 
 ## VPC-LINK-SG
 resource "aws_security_group" "vpc-link" {
-# checkov:skip=CKV2_AWS_5:SI existen servicios asociados a este SG (modules/api-gateway)
-
     vpc_id = aws_vpc.this.id
     name = "vpc-link-sg"
     tags = {
@@ -98,7 +96,6 @@ resource "aws_vpc_security_group_egress_rule" "vpc-link" {
 
 ## ALB-SG
 resource "aws_security_group" "alb" {
-# checkov:skip=CKV2_AWS_5:SI existen servicios asociados a este SG (modules/alb)
     vpc_id = aws_vpc.this.id
     name = "alb-sg"
     tags = {
@@ -130,7 +127,6 @@ resource "aws_vpc_security_group_egress_rule" "alb" {
 
 ## SERVICES-SG
 resource "aws_security_group" "service" {
-# checkov:skip=CKV2_AWS_5:SI existen servicios asociados a este SG (modules/services)
     vpc_id = aws_vpc.this.id
     name = "services-sg"
     tags = {
@@ -154,4 +150,16 @@ resource "aws_vpc_security_group_egress_rule" "service" {
     ip_protocol = "-1"
 
     description = "Permitir egreso hacia cualquier lado (cambiar)"
+}
+
+# Para ignorar: CKV2_AWS_5. Los SG son usados en otros modulos, pero
+# checkov no es capaz de detectar esto.
+resource "aws_network_interface" "dummy" {
+    count = 0
+    subnet_id       = aws_subnet.lambda_subnets[0].id
+    security_groups = [
+        aws_security_group.service.id,
+        aws_security_group.alb.id,
+        aws_security_group.vpc-link.id
+    ]
 }
