@@ -113,6 +113,7 @@ module "enviar_correo" {
     bucket_lambda_id = var.lambda_bucket_id
     dlq_arn = aws_sqs_queue.error.arn
     iam_role_arn = aws_iam_role.lambda_enviar_correo.arn
+    kms_key_arn = var.lambda_kms_key_arn
     env_variables = {
         REGION = var.region
         SES_SENDER_EMAIL = "support@${aws_ses_domain_mail_from.this.domain}"

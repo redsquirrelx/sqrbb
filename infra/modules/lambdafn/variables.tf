@@ -15,3 +15,5 @@ variable "bucket_lambda_bucket" {}
 variable "bucket_lambda_id" {}
 
 variable "env_variables" {}
+
+variable "kms_key_arn" {}

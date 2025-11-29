@@ -116,6 +116,7 @@ module "actualizar_estadisticas" {
     bucket_lambda_id = var.lambda_bucket_id
     dlq_arn = aws_sqs_queue.error.arn
     iam_role_arn = aws_iam_role.lambda_actualizar_estadisticas.arn
+    kms_key_arn = var.lambda_kms_key_arn
     env_variables = {
         REGION = var.region
     }

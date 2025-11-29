@@ -29,7 +29,7 @@ resource "aws_lambda_function" "this" {
         variables = var.env_variables
     }
 
-    kms_key_arn = "arn:aws:kms:us-east-2:912928332929:key/32ae94b9-c9be-41ab-888d-aa4e3fb445d0"
+    kms_key_arn = var.kms_key_arn
 
     dead_letter_config {
         target_arn = var.dlq_arn

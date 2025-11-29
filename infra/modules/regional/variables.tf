@@ -17,3 +17,5 @@ variable "account_id" {}
 variable "domain_name" {}
 
 variable "route_53_zone_zone_id" {}
+
+variable "lambda_kms_key_arn" {}
