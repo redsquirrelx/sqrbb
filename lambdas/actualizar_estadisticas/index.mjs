@@ -5,7 +5,7 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env
 
 export const handler = async (event) => {
     for (const record of event.Records) {
-        const message = JSON.parse(JSON.parse(JSON.parse(record.body).Message))
+        const message = JSON.parse(JSON.parse(record.body).Message)
 
         const propiedadId = message.propiedadId
 

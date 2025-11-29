@@ -5,7 +5,7 @@ const ses = new SESClient({ region: process.env.AWS_REGION })
 export const handler = async (event) => {
   try {
     for (const record of event.Records) {
-      const body = JSON.parse(JSON.parse(JSON.parse(record.body).Message))
+      const body = JSON.parse(JSON.parse(record.body).Message)
 
       const message = {
         propiedadId: body.propiedadId,
