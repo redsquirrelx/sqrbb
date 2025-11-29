@@ -89,6 +89,7 @@ resource "aws_iam_role_policy_attachment" "lambda_actualizar_estadisticas_pol_b"
 }
 
 resource "aws_security_group" "actualizar_estadisticas" {
+    region = var.region
     vpc_id = var.vpc_id
     name = "actualizar_estadisticas_sg"
     tags = {
@@ -99,6 +100,7 @@ resource "aws_security_group" "actualizar_estadisticas" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "actualizar_estadisticas" {
+    region = var.region
     security_group_id = aws_security_group.actualizar_estadisticas.id
     cidr_ipv4 = "0.0.0.0/0"
     ip_protocol = "-1"
@@ -123,6 +125,7 @@ module "actualizar_estadisticas" {
 }
 
 resource "aws_lambda_event_source_mapping" "actualizar_estadisticas" {
+    region = var.region
     event_source_arn  = module.stats_sqs.sqs_arn
     function_name     = module.actualizar_estadisticas.lambda_arn
     batch_size = 10

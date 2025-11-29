@@ -86,6 +86,7 @@ resource "aws_iam_role_policy_attachment" "lambda_enviar_correo_pol_b" {
 }
 
 resource "aws_security_group" "enviar_correo" {
+    region = var.region
     vpc_id = var.vpc_id
     name = "enviar_correo_sg"
     tags = {
@@ -96,6 +97,7 @@ resource "aws_security_group" "enviar_correo" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "enviar_correo" {
+    region = var.region
     security_group_id = aws_security_group.enviar_correo.id
     cidr_ipv4 = "0.0.0.0/0"
     ip_protocol = "-1"
@@ -121,6 +123,7 @@ module "enviar_correo" {
 }
 
 resource "aws_lambda_event_source_mapping" "enviar_correo" {
+    region = var.region
     event_source_arn  = module.reserva_mail_sqs.sqs_arn
     function_name     = module.enviar_correo.lambda_arn
     batch_size = 10
