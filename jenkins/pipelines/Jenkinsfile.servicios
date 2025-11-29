@@ -51,12 +51,6 @@ pipeline {
             }
         }
         
-        stage('Pruebas unitarias') {
-            steps {
-                echo 'Testing...'
-            }
-        }
-        
         stage('Desplegar') {
             steps {
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
