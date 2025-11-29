@@ -37,7 +37,10 @@ pipeline {
         
         stage('Pruebas unitarias') {
             steps {
-                echo 'Testing...'
+                dir("servicios/${SERVICIO}/") {
+                    sh 'npm i'
+                    sh 'npm run test'
+                }
             }
         }
 
