@@ -82,15 +82,3 @@ resource "aws_apigatewayv2_api_mapping" "api" {
     domain_name = aws_apigatewayv2_domain_name.this.domain_name
     stage = aws_apigatewayv2_stage.this.id
 }
-
-resource "aws_route53_record" "api" {
-    zone_id = var.hosted_zone_zone_id
-    name    = aws_apigatewayv2_domain_name.this.domain_name
-    type    = "A"
-
-    alias {
-        name = aws_apigatewayv2_domain_name.this.domain_name_configuration[0].target_domain_name
-        zone_id = aws_apigatewayv2_domain_name.this.domain_name_configuration[0].hosted_zone_id
-        evaluate_target_health = true
-    }
-}
