@@ -34,3 +34,8 @@ output "ses_domain_dkim_tokens" {
 output "ses_domain_mail_from_domain" {
     value = aws_ses_domain_mail_from.this.mail_from_domain
 }
+
+# SQS
+output "reserva_topic_arn" {
+    value = aws_sns_topic.reserva_proc.arn
+}
