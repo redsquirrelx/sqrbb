@@ -3,9 +3,9 @@ output "cluster-main" {
 }
 
 output "propiedades_td_arn" {
-    value = aws_ecs_task_definition.this["propiedades"].arn
+    value = module.propiedades.task_definition_arn
 }
 
 output "reservas_td_arn" {
-    value = aws_ecs_task_definition.this["reservas"].arn
+    value = module.reservas.task_definition_arn
 }
