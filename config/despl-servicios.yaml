@@ -2,7 +2,7 @@
 # - msrvc_name: nombre del servicio
 # - region: región
 
-- name: Desplegar mcsrvc propiedades
+- name: Desplegar servicio
   hosts: localhost
   connection: local
   gather_facts: false
