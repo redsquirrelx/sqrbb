@@ -37,7 +37,7 @@ pipeline {
         
         stage('Pruebas unitarias') {
             steps {
-                dir("servicios/${SERVICIO}/") {
+                dir("services/${SERVICIO}/") {
                     sh 'npm i'
                     sh 'npm run test'
                 }
