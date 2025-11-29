@@ -16,3 +16,6 @@ RUN apt install -y ansible=2.18.9
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.30.1.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN ./aws/install
+
+# ZIP
+RUN apt-get install zip
