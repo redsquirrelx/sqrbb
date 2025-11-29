@@ -10,8 +10,6 @@ variable "lambda_bucket_bucket" {}
 
 variable "lambda_bucket_id" {}
 
-variable "dynamodb_propiedades_arn" {}
-
 variable "account_id" {}
 
 variable "domain_name" {}

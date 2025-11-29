@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "lambda_actualizar_estadisticas" {
             "dynamodb:Scan" # Escanear toda la tabla (COstoso)
         ]
         resources = [
-            var.dynamodb_propiedades_arn
+            "arn:aws:dynamodb:${var.region}:${var.account_id}:table/Propiedades"
         ]
     }
 }
