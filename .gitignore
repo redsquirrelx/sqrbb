@@ -1,4 +1,5 @@
 results.xml/
+tf-outputs.json
 
 .terraform.lock.hcl
 node_modules/
