@@ -13,6 +13,8 @@ RUN add-apt-repository --yes --update ppa:ansible/ansible
 RUN apt install -y ansible=12.2.0-1ppa~noble
 
 # AWS CLI
+RUN apt install -y curl
+RUN apt install -y unzip
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.30.1.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN ./aws/install
