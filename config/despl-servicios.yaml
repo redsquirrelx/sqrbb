@@ -1,5 +1,6 @@
 # variables externas:
 # - msrvc_name: nombre del servicio
+# - region: región
 
 - name: Desplegar mcsrvc propiedades
   hosts: localhost
@@ -7,20 +8,20 @@
   gather_facts: false
   vars:
     project_root: "{{ playbook_dir }}/.."
-    account_id: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw aws-account-id') }}"
     msrvc_root: "{{project_root}}/services/{{ msrvc_name }}"
-    task_definition_arn: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw propiedades_td_arn') }}"
-    repo_region: "us-east-2"
-    cluster_name: "{{ lookup('pipe', 'terraform -chdir=../infra/ output -raw cluster-main-name') }}"
+
+    cluster_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['ecs_cluster_name_' ~ region].value }}"
+    account_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).aws_account_id.value }}"
+    task_definition_arn: "{{ (lookup('file', '../tf-outputs.json') | from_json)[msrvc_name ~ '_td_arn_' ~ region].value }}"
 
   tasks:
     - name: Autenticar cliente de docker
       shell: >
         aws ecr get-login-password 
-        --region us-east-2 |
+        --region {{region}} |
         docker login 
         --username AWS 
-        --password-stdin {{account_id}}.dkr.ecr.{{ repo_region }}.amazonaws.com
+        --password-stdin {{account_id}}.dkr.ecr.{{ region }}.amazonaws.com
     
     - name: Generar tag
       set_fact:
@@ -32,11 +33,11 @@
       
     - name: Etiquetar imagenes
       ansible.builtin.command: >
-        docker tag msrvc/{{ msrvc_name }} {{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
+        docker tag msrvc/{{ msrvc_name }} {{ account_id }}.dkr.ecr.{{ region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
 
     - name: Publicar imagenes
       ansible.builtin.command: >
-        docker push {{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
+        docker push {{ account_id }}.dkr.ecr.{{ region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}
     
     - name: Obtener task definition actual
       ansible.builtin.command: >
@@ -49,22 +50,23 @@
     - name: Obtener JSON del task taskDefinition
       set_fact:
         td_config: "{{ (td_out.stdout | from_json) }}"
-        new_image_arn: "{{ account_id }}.dkr.ecr.{{ repo_region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}"
+        new_image_arn: "{{ account_id }}.dkr.ecr.{{ region }}.amazonaws.com/msrvc/{{ msrvc_name }}:{{ img_tag }}"
         
     - name: Escribir nueva revisión del task definition
       ansible.builtin.copy:
         dest: "{{ msrvc_root }}/srvc_task_definition.json"
         content: >-
           {{ td_config | combine({
-              "containerDefinitions": (td_config.containerDefinitions | map('combine', { 'image': new_image_arn }))
-            }, recursive=false) | dict2items | rejectattr('key', 'in', [
+              "containerDefinitions": (td_config.containerDefinitions | map('combine', { 'image': new_image_arn }, recursive=True) | list)
+            }, recursive=True) | dict2items | rejectattr('key', 'in', [
               'taskDefinitionArn',
               'revision',
               'status',
               'requiresAttributes',
               'registeredAt',
               'registeredBy',
-              'compatibilities'
+              'compatibilities',
+              'deregisteredAt'
             ]) | items2dict | to_nice_json
           }}
     
@@ -72,7 +74,7 @@
       ansible.builtin.command: >
         aws ecs register-task-definition
         --cli-input-json file://{{ msrvc_root }}/srvc_task_definition.json
-        --region {{ repo_region }}
+        --region {{ region }}
       register:
         new_registered_td
         
@@ -84,10 +86,10 @@
       ansible.builtin.command: >
         aws ecs update-service
         --cluster {{ cluster_name }}
-        --service {{ msrvc_name }}-srvc
+        --service {{ msrvc_name }}
         --task-definition {{ new_td_arn }}
         --force-new-deployment
-        --region {{ repo_region }}
+        --region {{ region }}
     
     - name: Limpiar archivos temporales
       ansible.builtin.file:
