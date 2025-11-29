@@ -56,3 +56,19 @@ jobs:
           }
         }
       }
+
+      pipelineJob('servicios') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.servicios')
+          }
+        }
+      }
