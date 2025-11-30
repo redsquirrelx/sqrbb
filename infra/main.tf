@@ -150,7 +150,7 @@ module "services_us_east_2" {
     account_id = data.aws_caller_identity.current.account_id
     domain_name = var.domain_name
     loggroup_name = module.ecs_loggroup_us_east_2.loggroup_name
-    loggroup_arn = module.ecs_loggroup_us_east_2.loggroup_arn
+    loggroup_arn = module.ecs_loggroup_us_east_2.log_group_arn
     
 
     providers = {
@@ -167,7 +167,7 @@ module "services_eu_west_1" {
     account_id = data.aws_caller_identity.current.account_id
     domain_name = var.domain_name
     loggroup_name = module.ecs_loggroup_eu_west_1.loggroup_name
-    loggroup_arn = module.ecs_loggroup_eu_west_1.loggroup_arn
+    loggroup_arn = module.ecs_loggroup_eu_west_1.log_group_arn
 
     providers = {
         aws = aws.ew1
