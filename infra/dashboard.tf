@@ -1,7 +1,8 @@
 resource "aws_cloudwatch_dashboard" "this" {
-  dashboard_name = "panel"
+    region = "us-east-2"
+    dashboard_name = "panel"
 
-  dashboard_body = <<EOF
+    dashboard_body = <<EOF
 {
     "widgets": [
         {
