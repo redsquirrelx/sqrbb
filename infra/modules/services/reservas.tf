@@ -86,8 +86,9 @@ locals {
                 logDriver = "awslogs"
                 options = {
                     awslogs-region = var.region
-                    awslogs-group = var.loggroup_name
+                    awslogs-group = "awslogs-reservas"
                     awslogs-stream-prefix = "ecs-propiedades"
+                    awslogs-create-group = true
                 }
             }
         }
