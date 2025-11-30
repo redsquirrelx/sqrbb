@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "reservas"{
     }
 
     statement {
-        sid = "Cloudwatch Log Group"
+        sid = "CloudwatchLogGroup"
         effect = "Allow"
         actions = [
             "logs:CreateLogStream",
