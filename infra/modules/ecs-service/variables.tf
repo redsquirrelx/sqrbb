@@ -8,6 +8,8 @@ variable "container_definition_json" {}
 
 variable "cluster_id" {}
 
+variable "cluster_name" {}
+
 variable "security_group_id" {}
 
 variable "subnets_ids" {}

@@ -7,6 +7,7 @@ module "propiedades" {
     service_policy_document_json = data.aws_iam_policy_document.propiedades.json
     container_definition_json = local.propiedades_container_definition
     cluster_id = aws_ecs_cluster.this.id
+    cluster_name = aws_ecs_cluster.this.name
 
     security_group_id = var.service_data.propiedades.security_group_id
     subnets_ids = var.service_data.propiedades.subnets_ids
