@@ -5,3 +5,7 @@ output "target_domain_name" {
 output "hosted_zone_id" {
     value = aws_apigatewayv2_domain_name.this.domain_name_configuration[0].hosted_zone_id
 }
+
+output "apigateway_id" {
+    value = aws_apigatewayv2_api.this.id
+}
