@@ -81,9 +81,9 @@ resource "aws_lambda_function" "sigv4a" {
 
     reserved_concurrent_executions = -1
 
-    dead_letter_config {
-        target_arn = var.dlq_arn
-    }
+    # dead_letter_config {
+    #     target_arn = var.dlq_arn
+    # }
 
     tracing_config {
         mode = "Active"
