@@ -20,6 +20,26 @@ app.get('/propiedades/status', (req, res) => {
     })
 })
 
+app.get('/propiedades', (req, res) => {
+    const cmd = new ScanCommand({
+        TableName: "Propiedades"
+    })
+
+    dbClient.send(cmd).then(r => {
+        res.json({
+            task_identifier,
+            msg: `msrvc-propiedades-${process.env.SERVICE_REGION}`,
+            data: r.Items
+        })
+    }).catch(err => {
+        res.json({
+            task_identifier,
+            msg: `msrvc-propiedades-${process.env.SERVICE_REGION}`,
+            err
+        })
+    })
+})
+
 app.post('/propiedades', (req, res) => {
     if (!validarCamposRegistroPropiedad(req.body)) {
         res.status(400)
