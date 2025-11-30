@@ -15,6 +15,7 @@ services:
             - AWS_REGION=${AWS_REGION}
             - EC2_KEY=${EC2_KEY}
             - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
+            - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
         ports:
         - 8080:8080
         - 50000:50000
