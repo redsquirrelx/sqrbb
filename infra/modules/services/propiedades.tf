@@ -35,6 +35,18 @@ data "aws_iam_policy_document" "propiedades"{
             "arn:aws:dynamodb:${var.region}:${var.account_id}:table/Propiedades"
         ]
     }
+
+    statement {
+        sid = "Cloudwatch Log Group"
+        effect = "Allow"
+        actions = [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+        ]
+        resources = [
+            var.loggroup_arn
+        ]
+    }
 }
 
 locals {
@@ -62,6 +74,14 @@ locals {
                     value = var.domain_name
                 }
             ]
+            logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    awslogs-region = var.region
+                    awslogs-group = var.loggroup_name
+                    awslogs-stream-prefix = "ecs-propiedades"
+                }
+            }
         }
     ])
 }

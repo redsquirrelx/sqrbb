@@ -149,6 +149,9 @@ module "services_us_east_2" {
     service_data = local.microservices.us-east-2
     account_id = data.aws_caller_identity.current.account_id
     domain_name = var.domain_name
+    loggroup_name = module.ecs_loggroup_us_east_2.loggroup_name
+    loggroup_arn = module.ecs_loggroup_us_east_2.loggroup_arn
+    
 
     providers = {
         aws = aws.ue2
@@ -163,6 +166,8 @@ module "services_eu_west_1" {
     service_data = local.microservices.eu-west-1
     account_id = data.aws_caller_identity.current.account_id
     domain_name = var.domain_name
+    loggroup_name = module.ecs_loggroup_eu_west_1.loggroup_name
+    loggroup_arn = module.ecs_loggroup_eu_west_1.loggroup_arn
 
     providers = {
         aws = aws.ew1
