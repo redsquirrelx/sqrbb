@@ -32,11 +32,11 @@ output "reservas_td_arns" {
 # LAMBDAS
 
 output "lmbd_fn_sigv4a_arn" {
-    value = module.lambda.lambda-fn-sigv4a.function_name
+    value = module.sigv4a.lambda-fn-sigv4a.function_name
 }
 
 output "sigv4a_signer_name" {
-    value = module.lambda.sigv4a-signer-name
+    value = module.sigv4a.sigv4a-signer-name
 }
 
 output "lambda_actualizar_estadisticas" {

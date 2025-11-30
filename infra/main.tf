@@ -201,8 +201,8 @@ module "api_gateway_eu_west_1" {
     }
 }
 
-module "lambda" {
-    source = "./modules/lambda"
+module "sigv4a" {
+    source = "./modules/sigv4a"
 
     providers = {
         aws = aws.ue1
