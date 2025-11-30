@@ -21,6 +21,7 @@ pipeline {
             agent {
                 docker {
                     image 'bridgecrew/checkov:3.2.493'
+                    args '--entrypoint=""'
                 }
             }
             steps {
