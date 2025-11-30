@@ -64,6 +64,10 @@ locals {
                 {
                     name = "SERVICE_REGION",
                     value = var.region
+                },
+                {
+                    name = "DOMAIN_NAME",
+                    value = var.domain_name
                 }
             ]
         }

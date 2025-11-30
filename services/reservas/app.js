@@ -1,6 +1,7 @@
 const { randomUUID } = require('crypto')
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
 const { validarCamposReserva, validarReserva } = require('./utilidades')
 
@@ -9,6 +10,11 @@ const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns')
 const snsClient = new SNSClient({ region: process.env.SERVICE_REGION })
 
 const task_identifier = `${randomUUID()}-${process.env.SERVICE_REGION}`
+
+app.use(cors({
+    origin: `https://${process.env.DOMAIN_NAME}`,
+    methods: [ 'GET', 'POST' ]
+}))
 
 app.use(express.json())
 
