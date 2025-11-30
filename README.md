@@ -13,12 +13,8 @@ El sistema actual de reservas de alojamientos colapsa en picos de concurrencia, 
 ## Descripción del proyecto
 El sistema se despliega en AWS bajo la arquitectura de microservicios, la infraestructura se gestiona con Terraform y cada servicio se empaqueta y ejecuta en contenedores Docker.
 
-## Requisitos previos
-- Terraform >= v1.13.1
+## Requisitos
 - Docker >= 28.4.0
-- Ansible >= 2.18.9
-- aws-cli >= 2.30.1
-- node >= 22.x
 
 # Arquitectura
 Se aspira a lo siguiente:
@@ -26,49 +22,22 @@ Se aspira a lo siguiente:
 
 
 # Uso
-1. Configurar aws-cli con las credenciales de una cuenta AWS
-```
-aws configure
-```
 
-2. Clonar el repositorio:
-```
+## 1. Clonar el repositorio
+```bash
 git clone https://github.com/redsquirrelx/sqrbb.git
 cd sqrbb
 ```
 
-3. Levantar arquitectura:
-```
-terraform -chdir=infra/ init
-terraform -chdir=infra/ apply
+## 2. Ingresar variables de entorno (.env)
+```bash
+cp .env.template .env
 ```
 
-4. Crear un archivo ``desplegar.json`` dentro de la carpeta ``config/``, con el siguiente contenido:
-```json
-{
-  "microservicios": [
-    {
-      "name": "propiedades",
-      "root": "services/propiedades"
-    },
-    {
-      "name": "reservas",
-      "root": "services/reservas"
-    }
-  ]
-}
-```
-5. Desplegar microservicios:
+## 3. Levantar Jenkins
 ```bash
-ansible-playbook -i config/inventory.ini config/despl-microservicios.yaml -e "@config/desplegar.json"
-```
-5. Desplegar lambda "sigv4a"
-```bash
-ansible-playbook -i config/inventory.ini config/despl-lambdafn-sigv4a.yaml
+docker compose up -d
 ```
 
-6. Desplegar front end
-```bash
-ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
-```
-7. Desplegar API Gateway en la consola AWS (temporal)
+## 5. Ejecutar jobs
+* Iniciar primero el pipeline de provisionamiento
