@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-   name = "ecs_task_execution_${var.region}"
+   name = "ecs_task_execution_${var.region}_${var.name}"
    assume_role_policy = jsonencode({
        Version = "2012-10-17"
        Statement = [
