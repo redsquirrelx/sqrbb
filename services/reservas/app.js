@@ -8,14 +8,14 @@ const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns')
 
 const snsClient = new SNSClient({ region: process.env.SERVICE_REGION })
 
-const task_identifier = randomUUID()
+const task_identifier = `${randomUUID()}-${process.env.SERVICE_REGION}`
 
 app.use(express.json())
 
-app.get('/reservas', (req, res) => {
+app.get('/reservas/status', (req, res) => {
     res.json({
         task_identifier,
-        msg: `msrvc-reservas-${process.env.SERVICE_REGION}`
+        msg: `msrvc-reservas`
     })
 })
 
