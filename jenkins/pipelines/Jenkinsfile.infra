@@ -61,7 +61,7 @@ pipeline {
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
                     sh '''
                         export AWS_REGION=us-east-2
-                        terraform -chdir=infra/ apply tf-plan -auto-approve
+                        terraform -chdir=infra/ apply -auto-approve tf-plan
                         terraform -chdir=infra/ output -json > tf-outputs.json
                     '''
                 }
