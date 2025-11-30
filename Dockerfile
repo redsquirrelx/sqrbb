@@ -30,6 +30,17 @@ RUN apt-get install less
 # vim
 RUN apt-get install -y vim
 
+# TERRAFORM
+RUN apt-get update
+RUN apt-get install wget
+RUN wget -O- https://apt.releases.hashicorp.com/gpg \
+    | gpg --dearmor \
+    | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+
+RUN CODENAME=$( . /etc/os-release && echo $VERSION_CODENAME ) \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${CODENAME} main" \
+        > /etc/apt/sources.list.d/hashicorp.list
+
 # Plugins
 COPY jenkins/plugins.txt /usr/share/jenkins/ref/plugins.txt
 COPY jenkins/install-plugins.sh /usr/local/bin/install-plugins.sh
