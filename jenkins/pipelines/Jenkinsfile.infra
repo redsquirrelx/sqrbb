@@ -26,7 +26,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    checkov -d infra/ -o junitxml --output-file-path results.xml | head
+                    checkov -d infra/ -o junitxml --output-file-path console,results.xml --quiet
                 '''
             }
         }
