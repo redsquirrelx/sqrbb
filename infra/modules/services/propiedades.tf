@@ -80,7 +80,7 @@ locals {
                     awslogs-region = var.region
                     awslogs-group = "awslogs-propiedades"
                     awslogs-stream-prefix = "ecs-propiedades"
-                    awslogs-create-group = true
+                    awslogs-create-group = "true"
                 }
             }
         }
