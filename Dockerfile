@@ -41,6 +41,9 @@ RUN CODENAME=$( . /etc/os-release && echo $VERSION_CODENAME ) \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${CODENAME} main" \
         > /etc/apt/sources.list.d/hashicorp.list
 
+RUN apt-get update
+RUN apt-get install -y terraform=1.13.1-1
+
 # Plugins
 COPY jenkins/plugins.txt /usr/share/jenkins/ref/plugins.txt
 COPY jenkins/install-plugins.sh /usr/local/bin/install-plugins.sh
