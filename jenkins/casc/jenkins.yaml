@@ -1,0 +1,90 @@
+jenkins:
+  systemMessage: "Configuración inicial"
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: "DOMAIN_NAME"
+        value: ${DOMAIN_NAME}
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_USER}
+          password: ${JENKINS_PASSWORD}
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - aws:
+            scope: GLOBAL
+            id: "my_aws_credential"
+            description: "Especificar credenciales para AWS"
+            accessKey: ${AWS_ACCESS_KEY_ID}
+            secretKey: ${AWS_SECREY_KEY_ACCESS}
+
+jobs:
+  - script: >
+      pipelineJob('provisionamiento') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.infra')
+          }
+        }
+      }
+
+      pipelineJob('frontend') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.frontend')
+          }
+        }
+      }
+
+      pipelineJob('servicios') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.servicios')
+          }
+        }
+      }
+
+      pipelineJob('lambdas') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                branch('*/dev')
+                remote {
+                  url('${REPOSITORY_URL}')
+                }
+              }
+            }
+            scriptPath('jenkins/pipelines/Jenkinsfile.lambdas')
+          }
+        }
+      }

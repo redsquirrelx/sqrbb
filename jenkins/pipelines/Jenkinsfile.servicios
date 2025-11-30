@@ -1,0 +1,75 @@
+pipeline {
+    agent {
+        dockerfile {
+            filename 'jenkins/agents/Dockerfile.despl'
+        }
+    }
+    
+    options {
+        ansiColor('xterm')
+    }
+
+    parameters {
+        choice(
+            name: 'SERVICIO',
+            choices: [
+                'propiedades',
+                'reservas',
+            ],
+            description: 'Servicio'
+        )
+
+        choice(
+            name: 'REGION',
+            choices: [
+                'us-east-2',
+                'eu-west-1',
+            ],
+            description: 'Región'
+        )
+    }
+
+    stages {
+        stage('Clonar') {
+            steps {
+                script {
+                    currentBuild.displayName = "${SERVICIO} - ${REGION}"
+                }
+                checkout scm
+            }
+        }
+        
+        stage('Pruebas unitarias') {
+            steps {
+                dir("services/${SERVICIO}/") {
+                    sh 'npm i'
+                    sh 'npm run test'
+                }
+            }
+        }
+
+        stage('Obtener outputs del provisionamiento') {
+            steps {
+                copyArtifacts(
+                    projectName: 'provisionamiento',
+                    selector: lastSuccessful(),
+                    filter: 'tf-outputs.json'
+                )
+            }
+        }
+        
+        stage('Desplegar') {
+            steps {
+                withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
+                    sh """
+                        export AWS_REGION="us-east-2"
+                        ansible-playbook 
+                        -i config/inventory.ini
+                        config/despl-servicios.yaml
+                        -e "msrvc_name=${params.SERVICIO} region=${params.SERVICIO}"
+                    """
+                }
+            }
+        }
+    }
+}

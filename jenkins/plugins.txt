@@ -11,3 +11,7 @@ aws-credentials:254.v978a_5e206a_d7
 job-dsl:1.93
 
 ec2:2043.v483cc2854116
+
+ansicolor:1.0.6
+
+docker-workflow:634.vedc7242b_eda_7
