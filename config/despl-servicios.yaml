@@ -10,9 +10,9 @@
     project_root: "{{ playbook_dir }}/.."
     msrvc_root: "{{project_root}}/services/{{ msrvc_name }}"
 
-    cluster_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['ecs_cluster_name_' ~ region].value }}"
     account_id: "{{ (lookup('file', '../tf-outputs.json') | from_json).aws_account_id.value }}"
-    task_definition_arn: "{{ (lookup('file', '../tf-outputs.json') | from_json)[msrvc_name ~ '_td_arn_' ~ region].value }}"
+    cluster_name: "{{ (lookup('file', '../tf-outputs.json') | from_json).ecs_cluster_names.value[region] }}"
+    task_definition_arn: "{{ (lookup('file', '../tf-outputs.json') | from_json)[msrvc_name ~ '_td_arns'].value[region] }}"
 
   tasks:
     - name: Autenticar cliente de docker
@@ -44,6 +44,7 @@
         aws ecs describe-task-definition
         --task-definition {{ task_definition_arn }}
         --query taskDefinition
+        --region {{ region }}
       register:
         td_out
     
