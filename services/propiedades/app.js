@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
-const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb')
+const { DynamoDBDocumentClient, PutCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb')
 
 const task_identifier = `${randomUUID()}-${process.env.SERVICE_REGION}`
 const client = new DynamoDBClient({ region: process.env.SERVICE_REGION })
