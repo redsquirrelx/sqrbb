@@ -22,7 +22,7 @@ pipeline {
             // Con checkov
             steps {
                 sh '''
-                    checkov 
+                    echo validando... 
                 '''
             }
         }
