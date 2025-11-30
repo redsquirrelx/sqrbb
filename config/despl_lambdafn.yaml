@@ -10,9 +10,9 @@
     project_root: "{{ playbook_dir }}/.."
     lambda_fn_root: "{{ project_root }}/lambdas/{{lambda_name}}"
 
-    lambda_function_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_' ~ lambda_name ~ '_' ~ region ~ '_arn'].value }}"
-    lambda_signer_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['signer_' ~ lambda_name ~ '_' ~ region ~ '_arn'].value }}"
-    lambda_bucket: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_bucket_' ~ region].value }}"
+    lambda_function_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_' ~ lambda_name].value[region].lambda_arn }}"
+    lambda_signer_name: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_' ~ lambda_name].value[region].signer_arn }}"
+    lambda_bucket: "{{ (lookup('file', '../tf-outputs.json') | from_json)['lambda_bucket'].value[region] }}"
     
   tasks:
     - name: descargar dependencias

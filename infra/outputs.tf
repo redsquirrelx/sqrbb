@@ -65,7 +65,7 @@ output "lambda_enviar_correo" {
     }
 }
 
-output "lambda_bucket_eu-west-1" {
+output "lambda_bucket" {
     value = {
         us-east-2 = module.bucket_lambda_us_east_2.bucket
         eu-west-1 = module.bucket_lambda_eu_west_1.bucket
