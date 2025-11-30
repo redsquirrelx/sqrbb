@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-   name = "ecs_task_role_${var.region}"
+   name = "ecs_task_role_${var.region}_${var.name}"
    assume_role_policy = jsonencode({
        Version = "2012-10-17"
        Statement = [
@@ -46,7 +46,7 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 resource "aws_iam_policy" "this" {
-    name = "dynamodb_access_policy_${var.region}" # NOmbre de la politica
+    name = "dynamodb_access_policy_${var.region}_${var.name}" # NOmbre de la politica
     description = "Politicas para acceso a las tablas de DynamoDB"
 
     policy = var.service_policy_document_json
