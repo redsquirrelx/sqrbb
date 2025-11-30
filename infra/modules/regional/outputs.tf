@@ -36,6 +36,10 @@ output "ses_domain_mail_from_domain" {
 }
 
 # SQS
+output "error_dlq_arn" {
+    value = aws_sqs_queue.error.arn
+}
+
 output "reserva_topic_arn" {
     value = aws_sns_topic.reserva_proc.arn
 }

@@ -202,7 +202,7 @@ module "lambda" {
     bucket_lambda_bucket = module.bucket_lambda.bucket
     bucket_lambda_id = module.bucket_lambda.bucket_id
     bucket_staticweb_arns = [ for item in module.bucket_staticweb : item.bucket_arn ]
-    dlq_arn = aws_sqs_queue.error.arn
+    dlq_arn = module.regional_us_east_2.error_dlq_arn
 }
 
 module "cloudfront" {
