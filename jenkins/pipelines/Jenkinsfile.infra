@@ -18,11 +18,15 @@ pipeline {
         }
 
         stage('Validar') {
-            agent any
-            // Con checkov
+            agent {
+                docker {
+                    image 'bridgecrew/checkov:3.2.493'
+                }
+            }
             steps {
                 sh '''
-                    echo validando... 
+                    checkov -d infra/ -o junitxml --output-file-path results.xml
+                    cat results.xml | head
                 '''
             }
         }
