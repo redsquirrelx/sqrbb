@@ -152,6 +152,45 @@ resource "aws_vpc_security_group_egress_rule" "service" {
     description = "Permitir egreso hacia cualquier lado (cambiar)"
 }
 
+# LAMBDAS
+
+
+resource "aws_security_group" "actualizar_estadisticas" {
+    vpc_id = aws_vpc.this.id
+    name = "actualizar_estadisticas_sg"
+    tags = {
+        Name = "actualizar_estadisticas_sg"
+    }
+
+    description = "Security Group para actualizar_estadisticas"
+}
+
+resource "aws_vpc_security_group_egress_rule" "actualizar_estadisticas" {
+    security_group_id = aws_security_group.actualizar_estadisticas.id
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+
+    description = "Permitir egreso hacia cualquier lado"
+}
+
+resource "aws_security_group" "enviar_correo" {
+    vpc_id = aws_vpc.this.id
+    name = "enviar_correo_sg"
+    tags = {
+        Name = "enviar_correo_sg"
+    }
+
+    description = "Security Group para enviar_correo_sg"
+}
+
+resource "aws_vpc_security_group_egress_rule" "enviar_correo" {
+    security_group_id = aws_security_group.enviar_correo.id
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+
+    description = "Permitir egreso hacia cualquier lado"
+}
+
 # Para ignorar: CKV2_AWS_5. Los SG son usados en otros modulos, pero
 # checkov no es capaz de detectar esto.
 resource "aws_network_interface" "dummy" {

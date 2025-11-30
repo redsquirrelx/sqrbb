@@ -4,8 +4,6 @@ module "vpc_us_east_2" {
     source = "./modules/network"
 
     flow_log_group_arn = module.vpc_loggroup.log_group_arn
-    actualizar_estadisticas_sg_id = module.regional_us_east_2.actualizar_estadisticas_sg_id
-    enviar_correo_sg_id = module.regional_us_east_2.enviar_correo_sg_id
     region = "us-east-2"
 
     providers = {
@@ -17,8 +15,6 @@ module "vpc_eu_west_1" {
     source = "./modules/network"
 
     flow_log_group_arn = module.vpc_loggroup_eu_west_1.log_group_arn
-    actualizar_estadisticas_sg_id = module.regional_eu_west_1.actualizar_estadisticas_sg_id
-    enviar_correo_sg_id = module.regional_eu_west_1.enviar_correo_sg_id
     region = "eu-west-1"
 
     providers = {
@@ -39,6 +35,9 @@ module "regional_us_east_2" {
     route_53_zone_zone_id = aws_route53_zone.this.zone_id
     domain_name = var.domain_name
     lambda_kms_key_arn = aws_kms_key.lambda["us-east-2"].arn
+
+    updateStats_sg_id = module.vpc_us_east_2.updateStats_sg_id
+    sendEmail_sg_id = module.vpc_us_east_2.sendEmail_sg_id
 }
 
 module "regional_eu_west_1" {
@@ -54,6 +53,9 @@ module "regional_eu_west_1" {
     route_53_zone_zone_id = aws_route53_zone.this.zone_id
     domain_name = var.domain_name
     lambda_kms_key_arn = aws_kms_key.lambda["eu-west-1"].arn
+
+    updateStats_sg_id = module.vpc_eu_west_1.updateStats_sg_id
+    sendEmail_sg_id = module.vpc_eu_west_1.sendEmail_sg_id
 }
 
 module "alb_us_east_2" {

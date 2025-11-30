@@ -17,3 +17,7 @@ variable "domain_name" {}
 variable "route_53_zone_zone_id" {}
 
 variable "lambda_kms_key_arn" {}
+
+variable "updateStats_sg_id" {}
+
+variable "sendEmail_sg_id" {}

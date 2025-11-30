@@ -85,32 +85,12 @@ resource "aws_iam_role_policy_attachment" "lambda_enviar_correo_pol_b" {
     role = aws_iam_role.lambda_enviar_correo.name
 }
 
-resource "aws_security_group" "enviar_correo" {
-    region = var.region
-    vpc_id = var.vpc_id
-    name = "enviar_correo_sg"
-    tags = {
-        Name = "enviar_correo_sg"
-    }
-
-    description = "Security Group para enviar_correo_sg"
-}
-
-resource "aws_vpc_security_group_egress_rule" "enviar_correo" {
-    region = var.region
-    security_group_id = aws_security_group.enviar_correo.id
-    cidr_ipv4 = "0.0.0.0/0"
-    ip_protocol = "-1"
-
-    description = "Permitir egreso hacia cualquier lado"
-}
-
 module "enviar_correo" {
     source = "../lambdafn"
     region = var.region
     name = "enviar_correo"
     subnets_ids = [ var.lambda_subnets[0].id ]
-    security_groups_ids = [ aws_security_group.enviar_correo.id ]
+    security_groups_ids = [ var.sendEmail_sg_id ]
     bucket_lambda_bucket = var.lambda_bucket_bucket
     bucket_lambda_id = var.lambda_bucket_id
     dlq_arn = aws_sqs_queue.error.arn

@@ -16,6 +16,14 @@ output "vpc-link-sg" {
     value = aws_security_group.vpc-link
 }
 
+output "updateStats_sg_id" {
+    value = aws_security_group.actualizar_estadisticas.id
+}
+
+output "sendEmail_sg_id" {
+    value = aws_security_group.enviar_correo.id
+}
+
 # Subnets
 
 output "alb-subnets" {

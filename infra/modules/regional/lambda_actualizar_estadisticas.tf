@@ -88,32 +88,12 @@ resource "aws_iam_role_policy_attachment" "lambda_actualizar_estadisticas_pol_b"
     role = aws_iam_role.lambda_actualizar_estadisticas.name
 }
 
-resource "aws_security_group" "actualizar_estadisticas" {
-    region = var.region
-    vpc_id = var.vpc_id
-    name = "actualizar_estadisticas_sg"
-    tags = {
-        Name = "actualizar_estadisticas_sg"
-    }
-
-    description = "Security Group para actualizar_estadisticas"
-}
-
-resource "aws_vpc_security_group_egress_rule" "actualizar_estadisticas" {
-    region = var.region
-    security_group_id = aws_security_group.actualizar_estadisticas.id
-    cidr_ipv4 = "0.0.0.0/0"
-    ip_protocol = "-1"
-
-    description = "Permitir egreso hacia cualquier lado"
-}
-
 module "actualizar_estadisticas" {
     source = "../lambdafn"
     region = var.region
     name = "actualizar_estadisticas"
     subnets_ids = [ var.lambda_subnets[0].id ]
-    security_groups_ids = [ aws_security_group.actualizar_estadisticas.id ]
+    security_groups_ids = [ var.updateStats_sg_id ]
     bucket_lambda_bucket = var.lambda_bucket_bucket
     bucket_lambda_id = var.lambda_bucket_id
     dlq_arn = aws_sqs_queue.error.arn
