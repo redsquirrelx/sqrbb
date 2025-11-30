@@ -49,6 +49,7 @@ pipeline {
             agent {
                 dockerfile {
                     filename 'jenkins/agents/Dockerfile.infra'
+                    args '--env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY'
                 }
             }
             steps {
