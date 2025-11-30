@@ -69,6 +69,7 @@ resource "aws_iam_role_policy_attachment" "sigv4a" {
 
 resource "aws_lambda_function" "sigv4a" {
 # checkov:skip=CKV_AWS_117:se trata de un lambda@edge
+# checkov:skip=CKV_AWS_116:dlq no soportados por lambda@edge
     role = aws_iam_role.lambda-sigv4a.arn
     function_name = "sigv4a"
     runtime = "nodejs22.x"
