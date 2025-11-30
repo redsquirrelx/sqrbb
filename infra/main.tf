@@ -48,8 +48,8 @@ module "regional_eu_west_1" {
     kms_arn = aws_kms_key.kms["eu-west-1"].arn
     lambda_bucket_bucket = module.bucket_lambda_eu_west_1.bucket
     lambda_bucket_id = module.bucket_lambda_eu_west_1.bucket_id
-    lambda_subnets = module.vpc-eu-west-1.lambda_subnets
-    vpc_id = module.vpc-eu-west-1.vpc-id
+    lambda_subnets = module.vpc_eu_west_1.lambda_subnets
+    vpc_id = module.vpc_eu_west_1.vpc-id
     account_id = data.aws_caller_identity.current.account_id
     route_53_zone_zone_id = aws_route53_zone.this.zone_id
     domain_name = var.domain_name
