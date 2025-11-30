@@ -199,6 +199,8 @@ resource "aws_network_interface" "dummy" {
     security_groups = [
         aws_security_group.service.id,
         aws_security_group.alb.id,
-        aws_security_group.vpc-link.id
+        aws_security_group.vpc-link.id,
+        aws_security_group.actualizar_estadisticas.id,
+        aws_security_group.enviar_correo.id
     ]
 }
