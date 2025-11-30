@@ -206,8 +206,8 @@ resource "aws_kms_key" "lambda" {
       "Resource": "*",
       "Condition": {
         "StringEquals": {
-          "kms:CallerAccount": "912928332929",
-          "kms:ViaService": "lambda.us-east-2.amazonaws.com"
+          "kms:CallerAccount": "${data.aws_caller_identity.current.account_id}",
+          "kms:ViaService": "lambda.${each.key}.amazonaws.com"
         }
       }
     },
@@ -215,7 +215,7 @@ resource "aws_kms_key" "lambda" {
       "Sid": "Allow direct access to key metadata to the account",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::912928332929:root"
+        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
       },
       "Action": [
         "kms:Describe*",
