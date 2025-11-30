@@ -57,6 +57,7 @@ pipeline {
                 }
             }
             steps {
+                input message: '¿Aplicar los cambios en la infraestructura?', ok 'si, aplicar'
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
                     sh '''
                         export AWS_REGION=us-east-2
