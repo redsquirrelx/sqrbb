@@ -110,6 +110,14 @@ locals {
                 subnets_ids = [ module.vpc_us_east_2.service-subnets[0].id ]
                 target_group_arn = module.alb_us_east_2.propiedades-tg.arn
             }
+            reservas = {
+                repository_url = module.ecr_us_east_2.reservas_repository.repository_url,
+                security_group_id = module.vpc_us_east_2.service-sg.id
+                subnets_ids = [ module.vpc_us_east_2.service-subnets[0].id ]
+                target_group_arn = module.alb_us_east_2.reservas-tg.arn
+                topic_arn = module.regional_us_east_2.reserva_topic_arn
+                kms_arn = aws_kms_key.kms["us-east-2"].arn
+            }
         }
 
         eu-west-1 = {
@@ -119,14 +127,14 @@ locals {
                 subnets_ids = [ module.vpc_eu_west_1.service-subnets[0].id ]
                 target_group_arn = module.alb_eu_west_1.propiedades-tg.arn
             }
-        }
-        reservas = {
-            repository_url = module.ecr_us_east_2.reservas_repository.repository_url,
-            security_group_id = module.vpc_us_east_2.service-sg.id
-            subnets_ids = [ module.vpc_us_east_2.service-subnets[0].id ]
-            target_group_arn = module.alb_us_east_2.reservas-tg.arn
-            topic_arn = module.regional_us_east_2.reserva_topic_arn
-            kms_arn = aws_kms_key.kms["us-east-2"].arn
+            reservas = {
+                repository_url = module.ecr_eu_west_1.reservas_repository.repository_url,
+                security_group_id = module.vpc_eu_west_1.service-sg.id
+                subnets_ids = [ module.vpc_eu_west_1.service-subnets[0].id ]
+                target_group_arn = module.alb_eu_west_1.reservas-tg.arn
+                topic_arn = module.regional_eu_west_1.reserva_topic_arn
+                kms_arn = aws_kms_key.kms["eu-west-1"].arn
+            }
         }
     }
 }
