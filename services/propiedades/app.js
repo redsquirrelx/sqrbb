@@ -5,7 +5,7 @@ const app = express()
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
 const { DynamoDBDocumentClient, PutCommand } = require('@aws-sdk/lib-dynamodb')
 
-const task_identifier = randomUUID()
+const task_identifier = `${randomUUID()}-${process.env.SERVICE_REGION}`
 const client = new DynamoDBClient({ region: process.env.SERVICE_REGION })
 const dbClient = DynamoDBDocumentClient.from(client)
 
@@ -13,10 +13,10 @@ const { validarCamposRegistroPropiedad, validarPropiedad } = require('./utilidad
 
 app.use(express.json())
 
-app.get('/propiedades', (req, res) => {
+app.get('/propiedades/status', (req, res) => {
     res.json({
         task_identifier,
-        msg: `msrvc-propiedades-${process.env.SERVICE_REGION}`
+        msg: `msrvc-propiedades`
     })
 })
 
