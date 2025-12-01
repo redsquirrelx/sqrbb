@@ -69,7 +69,7 @@ const DialogModule = () => {
             })
 
             alert('Reserva realizada! Revisa tu correo!')
-            dialogSubmitButton.disable = false
+            dialogSubmitButton.disabled = false
             reservaForm.elements.propiedadid.value = ''
         } catch(err) {
             alert(`${err}`)
