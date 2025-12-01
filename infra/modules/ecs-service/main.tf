@@ -23,6 +23,32 @@ resource "aws_iam_role" "ecs_task_execution" {
    })
 }
 
+data "aws_iam_policy_document" "logs" {
+    statement {
+        sid = "CloudWatchLogsPermissions"
+        actions = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams"
+        ]
+        resources = [
+            "${var.loggroup_arn}/*"
+        ]
+    }
+}
+
+resource "aws_iam_policy" "logs" {
+    name = "ecs-logs-execution-role-policy-${var.name}-${var.region}"
+    description = "AmazonECSTaskExecutionRolePolicy no es suficiente para aprovechar awslogs driver"
+    policy = data.aws_iam_policy_document.logs.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_logs" {
+    role       = aws_iam_role.ecs_task_execution.name
+    policy_arn = aws_iam_policy.logs.arn
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
     role       = aws_iam_role.ecs_task_execution.name
     policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -46,9 +72,8 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 resource "aws_iam_policy" "this" {
-    name = "dynamodb_access_policy_${var.region}_${var.name}" # NOmbre de la politica
-    description = "Politicas para acceso a las tablas de DynamoDB"
-
+    name = "ecs_access_policy_${var.region}_${var.name}" # NOmbre de la politica
+    description = "Para ECS Task Role ${var.name} en ${var.region}"
     policy = var.service_policy_document_json
 }
 

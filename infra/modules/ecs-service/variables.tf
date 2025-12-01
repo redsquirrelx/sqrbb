@@ -15,3 +15,5 @@ variable "security_group_id" {}
 variable "subnets_ids" {}
 
 variable "target_group_arn" {}
+
+variable "loggroup_arn" {}

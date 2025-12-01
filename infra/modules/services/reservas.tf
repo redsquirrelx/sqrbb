@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "reservas"{
             "logs:PutLogEvents"
         ]
         resources = [
-            var.loggroup_arn
+            "${var.loggroup_arn}/*"
         ]
     }
 }
@@ -86,8 +86,8 @@ locals {
                 logDriver = "awslogs"
                 options = {
                     awslogs-region = var.region
-                    awslogs-group = "awslogs-reservas"
-                    awslogs-stream-prefix = "ecs-propiedades"
+                    awslogs-group = "${var.loggroup_name}/awslogs-reservas"
+                    awslogs-stream-prefix = "ecs-reservas"
                     awslogs-create-group = "true"
                 }
             }

@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "propiedades"{
             "logs:PutLogEvents"
         ]
         resources = [
-            var.loggroup_arn
+            "${var.loggroup_arn}/*"
         ]
     }
 }
@@ -78,7 +78,7 @@ locals {
                 logDriver = "awslogs"
                 options = {
                     awslogs-region = var.region
-                    awslogs-group = "awslogs-propiedades"
+                    awslogs-group = "${var.loggroup_name}/awslogs-propiedades"
                     awslogs-stream-prefix = "ecs-propiedades"
                     awslogs-create-group = "true"
                 }
