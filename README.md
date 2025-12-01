@@ -15,6 +15,7 @@ El sistema se despliega en AWS bajo la arquitectura de microservicios, la infrae
 
 ## Requisitos
 - Docker >= 28.4.0
+- Dominio registrado en Route 53
 
 # Arquitectura
 Se aspira a lo siguiente:
