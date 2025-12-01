@@ -24,6 +24,7 @@ pipeline {
                     selector: lastSuccessful(),
                     filter: 'tf-outputs.json'
                 )
+                sh 'cat tf-outputs.json'
             }
         }
         
