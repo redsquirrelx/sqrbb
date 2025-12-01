@@ -12,6 +12,7 @@ module "reservas" {
     security_group_id = var.service_data.reservas.security_group_id
     subnets_ids = var.service_data.reservas.subnets_ids
     target_group_arn = var.service_data.reservas.target_group_arn
+    loggroup_arn = var.loggroup_arn
 }
 
 data "aws_iam_policy_document" "reservas"{

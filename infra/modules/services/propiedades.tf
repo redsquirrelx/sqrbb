@@ -12,6 +12,7 @@ module "propiedades" {
     security_group_id = var.service_data.propiedades.security_group_id
     subnets_ids = var.service_data.propiedades.subnets_ids
     target_group_arn = var.service_data.propiedades.target_group_arn
+    loggroup_arn = var.loggroup_arn
 }
 
 data "aws_iam_policy_document" "propiedades"{
