@@ -78,7 +78,7 @@ jobs:
           }
         }
         parameters {
-          choiceParam('SERVICIO', [ 'propiedades2', 'reservas' ])
+          choiceParam('SERVICIO', [ 'propiedades', 'reservas' ])
           choiceParam('REGION', [ 'us-east-2', 'eu-west-1' ])
         }
       }
