@@ -62,10 +62,15 @@ const DialogModule = () => {
 
             await fetch(`${backendUrl}/reservas`, {
                 method: 'POST',
-                body: dummyRequest
+                body: JSON.stringify(dummyRequest),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
 
             alert('Reserva realizada! Revisa tu correo!')
+            dialogSubmitButton.disable = false
+            reservaForm.elements.propiedadid.value = ''
         } catch(err) {
             alert(`${err}`)
         } finally {
@@ -77,7 +82,6 @@ const DialogModule = () => {
 
     return { open }
 }
-
 
 const TablaPropiedadesModule = (dialogModule) => {
     const tableRefreshButton = document.querySelector('#tablarefresh')
@@ -102,25 +106,25 @@ const TablaPropiedadesModule = (dialogModule) => {
             const dir = getTdFromAttrib(elem['dir'])
             const type = getTdFromAttrib(elem['type'])
             const state = getTdFromAttrib(elem['state'])
-            const nroClientes = getTdFromAttrib('-')
+            const nroClientes = getTdFromAttrib(!elem.numeroClientes ? '-' : '' + elem.numeroClientes)
 
             const btn = document.createElement('button')
             btn.textContent = 'Reservar'
-            btn.data['prop-id'] = elem['PropiedadID']
+            btn.setAttribute('data-prop-id', elem['PropiedadID'])
             const btnTd = document.createElement('td')
             btnTd.appendChild(btn)
 
-            row.append([
-                maxGuests,
+            row.append(
                 propiedadId,
-                owner,
-                fechaRegistro,
-                dir,
                 type,
                 state,
+                dir,
+                owner,
+                maxGuests,
                 nroClientes,
+                fechaRegistro,
                 btnTd
-            ])
+            )
 
             return row
         })
@@ -139,7 +143,7 @@ const TablaPropiedadesModule = (dialogModule) => {
             const { data } = await res.json()
 
             const rows = getTableRowsFromData(data)
-            tableBody.append(rows)
+            tableBody.append(...rows)
         } catch(err) {
             tableErrorDiv.style.display = 'block'
             tableErrorDiv.textContent = `${err}`
@@ -194,11 +198,17 @@ const TablaPropiedadesModule = (dialogModule) => {
             const promises = []
 
             propiedadesDummies.forEach(el => {
-                const req = fetch(`${backendUrl}/propiedades`, { method: 'POST', body: el })
+                const req = fetch(`${backendUrl}/propiedades`, {
+                    method: 'POST',
+                    body: JSON.stringify(el),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                 promises.push(req)
             })
 
-            Promise.all(promises)
+            await Promise.all(promises)
             alert('Registros realizados correctamente')
 
         } catch(err) {
@@ -212,7 +222,7 @@ const TablaPropiedadesModule = (dialogModule) => {
 
     const tableClick = (evt) => {
         if (evt.target.tagName === 'BUTTON') {
-            dialogModule.open(evt.target.dataset.propId)
+            dialogModule.open(evt.target.getAttribute('data-prop-id'))
         }
     }
     
