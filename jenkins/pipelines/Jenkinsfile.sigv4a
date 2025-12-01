@@ -15,18 +15,25 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Obtener output del provisionamiento') {
+            steps {
+                copyArtifacts(
+                    projectName: 'provisionamiento',
+                    selector: lastSuccessful(),
+                    filter: 'tf-outputs.json'
+                )
+            }
+        }
         
-        stage('Desplegar dist') {
+        stage('Desplegar sigv4a') {
             steps {
                 withCredentials([[ $class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my_aws_credential']]) {
-                    sh """
-                        echo 'const backendUrl = \"https://api.$DOMAIN_NAME\"' > frontend/dist/config.js
-                    """
                     sh """
                         export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
                         export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                         export AWS_REGION="us-east-2"
-                        ansible-playbook -i config/inventory.ini config/despl-frontend.yaml
+                        ansible-playbook -i config/inventory.ini config/despl-lambdafn-sigv4a.yaml
                     """
                 }
             }
