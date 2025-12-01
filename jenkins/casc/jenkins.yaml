@@ -36,7 +36,7 @@ jobs:
           cpsScm {
             scm {
               git {
-                branch('*/dev')
+                branch('*/main')
                 remote {
                   url('${REPOSITORY_URL}')
                 }
@@ -52,7 +52,7 @@ jobs:
           cpsScm {
             scm {
               git {
-                branch('*/dev')
+                branch('*/main')
                 remote {
                   url('${REPOSITORY_URL}')
                 }
@@ -68,7 +68,7 @@ jobs:
           cpsScm {
             scm {
               git {
-                branch('*/dev')
+                branch('*/main')
                 remote {
                   url('${REPOSITORY_URL}')
                 }
@@ -88,7 +88,7 @@ jobs:
           cpsScm {
             scm {
               git {
-                branch('*/dev')
+                branch('*/main')
                 remote {
                   url('${REPOSITORY_URL}')
                 }
@@ -108,7 +108,7 @@ jobs:
           cpsScm {
             scm {
               git {
-                branch('*/dev')
+                branch('*/main')
                 remote {
                   url('${REPOSITORY_URL}')
                 }
