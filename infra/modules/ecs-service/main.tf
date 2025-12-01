@@ -72,8 +72,9 @@ resource "aws_iam_role" "ecs_task_role" {
 }
 
 resource "aws_iam_policy" "this" {
-    name = "ecs_access_policy_${var.region}_${var.name}" # NOmbre de la politica
-    description = "Para ECS Task Role ${var.name} en ${var.region}"
+    name = "dynamodb_access_policy_${var.region}_${var.name}" # NOmbre de la politica
+    description = "Politicas para acceso a las tablas de DynamoDB"
+
     policy = var.service_policy_document_json
 }
 
