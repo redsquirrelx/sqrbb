@@ -77,6 +77,10 @@ jobs:
             scriptPath('jenkins/pipelines/Jenkinsfile.servicios')
           }
         }
+        parameters {
+          choiceParam('SERVICIO', [ 'propiedades2', 'reservas' ])
+          choiceParam('REGION', [ 'us-east-2', 'eu-west-1' ])
+        }
       }
 
       pipelineJob('lambdas') {
@@ -92,6 +96,10 @@ jobs:
             }
             scriptPath('jenkins/pipelines/Jenkinsfile.lambdas')
           }
+        }
+        parameters {
+          choiceParam('LAMBDA', [ 'actualizar_estadisticas', 'enviar_correo' ])
+          choiceParam('REGION', [ 'us-east-2', 'eu-west-1' ])
         }
       }
 
